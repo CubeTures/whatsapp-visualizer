@@ -48,6 +48,7 @@ type Counts struct {
 	Deleted  int `json:"deleted"`
 	Edited   int `json:"edited"`
 }
+
 type Frequencies struct {
 	Phrases map[string]int `json:"phrases"`
 	Words   map[string]int `json:"words"`
@@ -56,11 +57,11 @@ type Frequencies struct {
 }
 
 type CountsByTime struct {
-	Hour    [24]int                             `json:"hour"`
-	Weekday [7]int                              `json:"weekday"`
-	Month   [12]int                             `json:"month"`
-	Year    map[int]int                         `json:"year"`
-	Exact   map[int]map[int]map[int]map[int]int `json:"exact"`
+	Hour    [24]Counts                              `json:"hour"`
+	Weekday [7]Counts                               `json:"weekday"`
+	Month   [12]Counts                              `json:"month"`
+	Year    map[int]*Counts                         `json:"year"`
+	Exact   map[int]map[int]map[int]map[int]*Counts `json:"exact"`
 }
 
 type Lengths struct {
@@ -98,7 +99,7 @@ func (ln *Lengths) String() string {
 	return fmt.Sprintf("Lengths:\nLongest Message: %v\nAverage Words Per Message: %v\nAverage Emojis Per Message: %v\n", ln.LongestMessages.String(), ln.AverageWordsPerMessage.content, ln.AverageEmojisPerMessage.content)
 }
 
-func StringMonth(months [12]int) string {
+func StringMonth(months [12]Counts) string {
 	var builder strings.Builder
 	builder.WriteString("[ ")
 
@@ -110,7 +111,7 @@ func StringMonth(months [12]int) string {
 	return builder.String()
 }
 
-func StringWeekday(weekdays [7]int) string {
+func StringWeekday(weekdays [7]Counts) string {
 	var builder strings.Builder
 	builder.WriteString("[ ")
 
@@ -122,7 +123,7 @@ func StringWeekday(weekdays [7]int) string {
 	return builder.String()
 }
 
-func StringHour(hours [24]int) string {
+func StringHour(hours [24]Counts) string {
 	var builder strings.Builder
 	builder.WriteString("[ ")
 

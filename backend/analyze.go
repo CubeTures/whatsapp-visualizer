@@ -77,8 +77,8 @@ func newStatistic() *Statistics {
 			Links:   make(map[string]int),
 		},
 		CountsByTime: &CountsByTime{
-			Year:  make(map[int]int),
-			Exact: make(map[int]map[int]map[int]map[int]int),
+			Year:  make(map[int]*Counts),
+			Exact: make(map[int]map[int]map[int]map[int]*Counts),
 		},
 		Lengths: &Lengths{
 			LongestMessages:         CreateQueue[string](50),
@@ -99,33 +99,27 @@ func accumulatePersonal(slices []*Statistics) *Statistics {
 }
 
 func analyzePersonalMessage(message *Message, stats *Statistics) {
-	analyzePersonalMessageCounts(message, stats)
-	analyzePersonalMessageTime(message, stats)
+	counts := analyzePersonalMessageCounts(message, stats)
+	analyzePersonalMessageTime(message, counts, stats)
 	analyzePersonalMessageLength(message, stats)
 }
 
-func analyzePersonalMessageCounts(message *Message, stats *Statistics) {
-	stats.Counts.Messages += 1
+func analyzePersonalMessageCounts(message *Message, stats *Statistics) *Counts {
+	counts := &Counts{}
+	counts.Messages += 1
 
 	if message.content.isMedia {
-		stats.Counts.Media += 1
+		counts.Media += 1
 	} else if message.content.isCall {
-		stats.Counts.Calls += 1
+		counts.Calls += 1
 	} else if message.content.isDeleted {
-		stats.Counts.Deleted += 1
+		counts.Deleted += 1
 	} else if message.content.isEdited {
-		stats.Counts.Edited += 1
+		counts.Edited += 1
 	} else {
-		messageLength := len(message.content.words)
-		stats.Counts.Words += messageLength
+		counts.Emojis += len(message.content.emojis)
 
-		emojiCount := len(message.content.emojis)
-		stats.Counts.Emojis += emojiCount
-
-		linkCount := len(message.content.links)
-		stats.Counts.Links += linkCount
-
-		if 0 < messageLength && messageLength <= 3 {
+		if 0 < counts.Words && counts.Words <= 3 {
 			phrase := strings.Join(message.content.words, " ")
 
 			if len(phrase) < 50 {
@@ -133,16 +127,19 @@ func analyzePersonalMessageCounts(message *Message, stats *Statistics) {
 			}
 		}
 
+		wordCount := 0
 		letterCount := 0
 		for _, word := range message.content.words {
 			clean, valid := cleanWord(word)
 
 			if valid {
+				wordCount += 1
 				letterCount += len(strings.Split(clean, ""))
 				stats.Frequencies.Words[clean] += 1
 			}
 		}
-		stats.Counts.Letters += letterCount
+		counts.Words += wordCount
+		counts.Letters += letterCount
 
 		for _, emoji := range message.content.emojis {
 			stats.Frequencies.Emojis[emoji] += 1
@@ -159,9 +156,13 @@ func analyzePersonalMessageCounts(message *Message, stats *Statistics) {
 
 			if host != "" {
 				stats.Frequencies.Links[host] += 1
+				counts.Links += 1
 			}
 		}
 	}
+
+	stats.Counts.Join(counts)
+	return counts
 }
 
 func cleanWord(word string) (string, bool) {
@@ -176,37 +177,48 @@ func cleanWord(word string) (string, bool) {
 	return trimmed, true
 }
 
-func analyzePersonalMessageTime(message *Message, stats *Statistics) {
+func analyzePersonalMessageTime(message *Message, counts *Counts, stats *Statistics) {
 	year := message.date.Year()
 	month := int(message.date.Month()) - 1
 	weekday := int(message.date.Weekday())
 	day := message.date.Day()
 	hour := message.date.Hour()
 
-	stats.CountsByTime.Year[year] += 1
-	stats.CountsByTime.Month[month] += 1
-	stats.CountsByTime.Weekday[weekday] += 1
-	stats.CountsByTime.Hour[hour] += 1
-	incrementExactTimeCount(stats, year, month, day, hour)
+	if existing, ok := stats.CountsByTime.Year[year]; ok {
+		existing.Join(counts)
+	} else {
+		copy := *counts
+		stats.CountsByTime.Year[year] = &copy
+	}
+
+	stats.CountsByTime.Month[month].Join(counts)
+	stats.CountsByTime.Weekday[weekday].Join(counts)
+	stats.CountsByTime.Hour[hour].Join(counts)
+	updateExactTimeCount(stats.CountsByTime.Exact, counts, year, month, day, hour)
 }
 
-func incrementExactTimeCount(stats *Statistics, year, month, day, hour int) {
-	_, yearInit := stats.CountsByTime.Exact[year]
-	if !yearInit {
-		stats.CountsByTime.Exact[year] = make(map[int]map[int]map[int]int)
+func updateExactTimeCount(exact map[int]map[int]map[int]map[int]*Counts, counts *Counts, year, month, day, hour int) {
+	if exact[year] == nil {
+		exact[year] = make(map[int]map[int]map[int]*Counts)
 	}
+	yearMap := exact[year]
 
-	_, monthInit := stats.CountsByTime.Exact[year][month]
-	if !monthInit {
-		stats.CountsByTime.Exact[year][month] = make(map[int]map[int]int)
+	if yearMap[month] == nil {
+		yearMap[month] = make(map[int]map[int]*Counts)
 	}
+	monthMap := yearMap[month]
 
-	_, dayInit := stats.CountsByTime.Exact[year][month][day]
-	if !dayInit {
-		stats.CountsByTime.Exact[year][month][day] = make(map[int]int)
+	if monthMap[day] == nil {
+		monthMap[day] = make(map[int]*Counts)
 	}
+	dayMap := monthMap[day]
 
-	stats.CountsByTime.Exact[year][month][day][hour] += 1
+	if c, ok := dayMap[hour]; ok {
+		c.Join(counts)
+	} else {
+		copy := *counts
+		dayMap[hour] = &copy
+	}
 }
 
 func analyzePersonalMessageLength(message *Message, stats *Statistics) {
@@ -242,30 +254,34 @@ func analyzeAggregate(personal *SyncMap[*Statistics]) *Statistics {
 	return stats
 }
 
+func (a *Counts) Join(b *Counts) {
+	a.Messages += b.Messages
+	a.Words += b.Words
+	a.Letters += b.Letters
+	a.Emojis += b.Emojis
+	a.Links += b.Links
+	a.Media += b.Media
+	a.Calls += b.Calls
+	a.Deleted += b.Deleted
+	a.Edited += b.Edited
+}
+
 func (a *Statistics) Join(b *Statistics) {
 	// counts
-	a.Counts.Messages += b.Counts.Messages
-	a.Counts.Words += b.Counts.Words
-	a.Counts.Letters += b.Counts.Letters
-	a.Counts.Emojis += b.Counts.Emojis
-	a.Counts.Links += b.Counts.Links
-	a.Counts.Media += b.Counts.Media
-	a.Counts.Calls += b.Counts.Calls
-	a.Counts.Deleted += b.Counts.Deleted
-	a.Counts.Edited += b.Counts.Edited
+	a.Counts.Join(b.Counts)
 
 	// frequency
-	joinMaps(&a.Frequencies.Phrases, &b.Frequencies.Phrases)
-	joinMaps(&a.Frequencies.Words, &b.Frequencies.Words)
-	joinMaps(&a.Frequencies.Emojis, &b.Frequencies.Emojis)
-	joinMaps(&a.Frequencies.Links, &b.Frequencies.Links)
+	joinMapInts(a.Frequencies.Phrases, b.Frequencies.Phrases)
+	joinMapInts(a.Frequencies.Words, b.Frequencies.Words)
+	joinMapInts(a.Frequencies.Emojis, b.Frequencies.Emojis)
+	joinMapInts(a.Frequencies.Links, b.Frequencies.Links)
 
 	// time
 	joinTimes(&a.CountsByTime.Hour, &b.CountsByTime.Hour)
 	joinTimes(&a.CountsByTime.Weekday, &b.CountsByTime.Weekday)
 	joinTimes(&a.CountsByTime.Month, &b.CountsByTime.Month)
-	joinMaps(&a.CountsByTime.Year, &b.CountsByTime.Year)
-	joinDeepestMaps(&a.CountsByTime.Exact, &b.CountsByTime.Exact)
+	joinYears(a.CountsByTime.Year, b.CountsByTime.Year)
+	joinExacts(a.CountsByTime.Exact, b.CountsByTime.Exact)
 
 	// length
 	a.Lengths.LongestMessages.Join(b.Lengths.LongestMessages)
@@ -273,73 +289,51 @@ func (a *Statistics) Join(b *Statistics) {
 	joinRunningAverages(a.Lengths.AverageEmojisPerMessage, b.Lengths.AverageEmojisPerMessage)
 }
 
-func joinMaps[T comparable](a, b *map[T]int) {
-	for key, value := range *b {
-		(*a)[key] += value
+func joinMapInts[T comparable](a, b map[T]int) {
+	for key, value := range b {
+		a[key] += value
 	}
 }
 
-// joinDeepMaps combines counts in a map of maps
-func joinDeepMaps(a, b *map[int]map[int]int) {
-	for outerKey, innerMapB := range *b {
-		innerMapA, exists := (*a)[outerKey]
-		if !exists {
-			// If the outerKey doesn't exist in `a`, just assign the whole inner map from `b`
-			(*a)[outerKey] = innerMapB
+func joinYears(a, b map[int]*Counts) {
+	for year, count := range b {
+		if existing, ok := a[year]; ok {
+			existing.Join(count)
 		} else {
-			// If the outerKey exists, combine the inner maps
-			joinMaps(&innerMapA, &innerMapB)
-			(*a)[outerKey] = innerMapA
+			copy := *count
+			a[year] = &copy
 		}
 	}
 }
 
-// joinDeeperMaps combines counts in a map of maps of maps
-func joinDeeperMaps(a, b *map[int]map[int]map[int]int) {
-	for outerKey, middleMapB := range *b {
-		middleMapA, exists := (*a)[outerKey]
-		if !exists {
-			// If the outerKey doesn't exist in `a`, just assign the whole middle map from `b`
-			(*a)[outerKey] = middleMapB
-		} else {
-			// If the outerKey exists, combine the middle maps
-			joinDeepMaps(&middleMapA, &middleMapB)
-			(*a)[outerKey] = middleMapA
+func joinExacts(a, b map[int]map[int]map[int]map[int]*Counts) {
+	for year, monthMap := range b {
+		for month, dayMap := range monthMap {
+			for day, hourMap := range dayMap {
+				for hour, count := range hourMap {
+					updateExactTimeCount(a, count, year, month, day, hour)
+				}
+			}
 		}
 	}
 }
 
-// joinDeepestMaps combines counts in a map of maps of maps of maps
-func joinDeepestMaps(a, b *map[int]map[int]map[int]map[int]int) {
-	for outerKey, deeperMapB := range *b {
-		deeperMapA, exists := (*a)[outerKey]
-		if !exists {
-			// If the outerKey doesn't exist in `a`, just assign the whole deeper map from `b`
-			(*a)[outerKey] = deeperMapB
-		} else {
-			// If the outerKey exists, combine the deeper maps
-			joinDeeperMaps(&deeperMapA, &deeperMapB)
-			(*a)[outerKey] = deeperMapA
-		}
-	}
-}
-
-func joinTimes[T ~*[24]int | *[7]int | *[12]int](a, b T) {
-	var slice []int
+func joinTimes[T ~*[24]Counts | *[7]Counts | *[12]Counts](a, b T) {
+	var slice []Counts
 
 	switch v := any(b).(type) {
-	case *[24]int:
+	case *[24]Counts:
 		slice = v[:]
-	case *[7]int:
+	case *[7]Counts:
 		slice = v[:]
-	case *[12]int:
+	case *[12]Counts:
 		slice = v[:]
 	default:
 		panic("Unsupported type")
 	}
 
 	for i, n := range slice {
-		a[i] += n
+		a[i].Join(&n)
 	}
 }
 

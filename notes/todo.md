@@ -10,17 +10,17 @@
     -   Average words per message
     -   Average emojis per message
     -   Total unique words / emojis
+    -   Links by source
+    -   Real day counts
+        -   Counts for every day messaged
+        -   See the count by year, be able to go into that year and see counts by month for that year, etc. until hour of the day
 
 -   Per person stretch
 
-    -   Links by source
     -   Most messages/words/letters in an hour/day (and date)
     -   First messages (after 6 hour period of inactivity, who messages first?)
     -   Number of misspellings
     -   Average misspellings per message
-    -   Real day counts
-        -   Counts for every day messaged
-        -   See the count by year, be able to go into that year and see counts by month for that year, etc. until hour of the day
 
 -   Bundled statistics
 
@@ -43,6 +43,26 @@
 
 # Fixes
 
+-   Replace ’ to ', etc.
+
+-   `year *map[int]*Counts` not counted correctly
+-   `exact ...` not counted correctly
 -   svelte ui
-    -   Word comparison
-        -   Type a word and see how many words have also been said the same amount of times
+    -   Aggregate comparison
+        -   Pie Charts
+            -   All counts
+            -   Unique frequencies
+            -   Averages
+        -   Lists
+            -   Longest messages
+            -   Top frequencies
+        -   Stacked Bar Charts
+            -   Count by times (show words, emojis, links, deleted, edited, media, etc.)
+        -   Expandable Sankey
+            -   Exact times
+        -   Multiline Charts
+            -   Exact times
+    -   Tabs for each person + aggregate
+        -   Raw data
+        -   Word comparison
+            -   Type a word and see how many words have also been said the same amount of times

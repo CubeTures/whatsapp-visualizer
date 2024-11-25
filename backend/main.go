@@ -3,12 +3,13 @@ package main
 import "fmt"
 
 func main() {
-	fileName := "RealChat"
+	fileName := "../data/RealChat"
 	log := true
 
 	messages, members := read(fileName, log)
 	bundle := bundle(messages, members, log)
 	write(fileName, bundle, log)
+	check(bundle, log)
 }
 
 func read(fileName string, log bool) ([]*Message, []string) {
@@ -49,5 +50,17 @@ func write(fileName string, bundle *Bundle, log bool) {
 
 	if log {
 		fmt.Println("Completed Write")
+	}
+}
+
+func check(bundle *Bundle, log bool) {
+	if log {
+		fmt.Println("Starting Check")
+	}
+
+	checkBundle(bundle)
+
+	if log {
+		fmt.Println("Completed Check")
 	}
 }

@@ -115,10 +115,11 @@ func parseDate(_date string, _time string, _timeOfDay string) time.Time {
 	hour := parseInt(timeSplit[0])
 	minute := parseInt(timeSplit[1])
 
+	if hour == 12 {
+		hour = 0
+	}
 	if _timeOfDay[0] == 'P' {
 		hour += 12
-	} else if hour == 12 {
-		hour = 0
 	}
 
 	return time.Date(year, time.Month(month), day, hour, minute, 0, 0, time.Local)
