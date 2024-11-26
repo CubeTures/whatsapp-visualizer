@@ -94,10 +94,14 @@ func readContent(reader *strings.Reader) (string, []string) {
 			panic(err)
 		}
 
-		if char > 0xFF && IsEmoji(char) {
+		if char > 0x7F && IsEmoji(char) {
 			emojis = append(emojis, GetEmoji(char))
 		} else {
-			builder.WriteRune(char)
+			if replacement, exists := replace[char]; exists {
+				builder.WriteRune(replacement)
+			} else {
+				builder.WriteRune(char)
+			}
 		}
 	}
 
@@ -174,7 +178,10 @@ func parseMessageContent(content string, emojis []string) *MessageContent {
 }
 
 func removeLinks(content string) ([]string, []string) {
-	mixed := strings.Fields(content)
+	//
+	mixed := strings.FieldsFunc(content, func(r rune) bool {
+		return unicode.IsSpace(r) || r == '/'
+	})
 	var words []string = make([]string, 0, len(mixed))
 	var links []string
 
@@ -195,4 +202,45 @@ func removeLinks(content string) ([]string, []string) {
 	}
 
 	return words, links
+}
+
+var replace map[rune]rune = map[rune]rune{
+	'＂': '"',
+	'＇': '\'',
+
+	// opening quote
+	'«': '"',
+	'‘': '\'',
+	'‚': '\'',
+	'“': '"',
+	'„': '"',
+	'‹': '\'',
+	'「': '"',
+	'『': '\'',
+	'〝': '"',
+
+	'｢': '"',
+
+	// closing quote
+	'»': '"',
+	'’': '\'',
+	'‛': '\'',
+	'”': '"',
+	'‟': '"',
+	'›': '\'',
+	'」': '"',
+	'』': '\'',
+	'〞': '"',
+	'｣': '"',
+
+	// dash
+	'­': '-',
+	'֊': '-',
+	'᠆': '-',
+	'‐': '-',
+	'‑': '-',
+	'⸗': '-',
+	'・': '-',
+	'﹣': '-',
+	'－': '-',
 }

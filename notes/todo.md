@@ -41,12 +41,28 @@
     -   message
         -   words
 
-# Fixes
+# Pages
 
--   Replace ’ to ', etc.
+-   Landing page
+    -   WhatsApp logo, upload button
+-   Overall
+    -   Show overall statistics (aggregate, all time)
+    -   All count pie charts
+    -   Counts by Time
+-   By Date
+    -   Scrub a top bar that allows you to choose a more specific date (brush)
+    -   Links to large points to quickly jump to
+        -   Year then month then day then hour
+-   Exact
+    -   Top frequencies
+    -   Longest messages
+    -   Word search
+        -   See how many times a specific word (and similar words) were used
+        -   Get a random word or phrase and how many times it was used
 
--   `year *map[int]*Counts` not counted correctly
--   `exact ...` not counted correctly
+# TODO
+
+-   timestamp logs instead of just count for frequencies
 -   svelte ui
     -   Aggregate comparison
         -   Pie Charts
