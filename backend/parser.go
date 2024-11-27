@@ -178,10 +178,7 @@ func parseMessageContent(content string, emojis []string) *MessageContent {
 }
 
 func removeLinks(content string) ([]string, []string) {
-	//
-	mixed := strings.FieldsFunc(content, func(r rune) bool {
-		return unicode.IsSpace(r) || r == '/'
-	})
+	mixed := strings.Fields(content)
 	var words []string = make([]string, 0, len(mixed))
 	var links []string
 
@@ -192,14 +189,15 @@ func removeLinks(content string) ([]string, []string) {
 		if isLink {
 			links = append(links, word)
 		} else {
-			words = append(words, word)
+			ws := strings.Split(word, "/")
+			words = append(words, ws...)
 		}
 	}
 
-	if len(links) == 0 && len(words) != cap(words) {
-		output := fmt.Sprintf("Allocated more space than necessary. Words: %v, Len: %v, Cap: %v; Links: %v, Len: %v, Cap: %v", words, len(words), cap(words), links, len(links), cap(links))
-		panic(output)
-	}
+	// if len(links) == 0 && len(words) != cap(words) {
+	// 	output := fmt.Sprintf("Allocated more space than necessary. Words: %v, Len: %v, Cap: %v; Links: %v, Len: %v, Cap: %v", words, len(words), cap(words), links, len(links), cap(links))
+	// 	panic(output)
+	// }
 
 	return words, links
 }

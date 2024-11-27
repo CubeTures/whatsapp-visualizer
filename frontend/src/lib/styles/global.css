@@ -1,0 +1,13 @@
+:root {
+	--padding: 12px;
+}
+
+body {
+	--vis-dark-tooltip-background-color: rgba(
+		theme("colors.neutral.800"),
+		0.95
+	);
+	--vis-dark-tooltip-border-color: theme("colors.neutral.700");
+
+	padding: var(--padding);
+}

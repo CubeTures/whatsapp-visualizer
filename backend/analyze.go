@@ -119,14 +119,6 @@ func analyzePersonalMessageCounts(message *Message, stats *Statistics) *Counts {
 	} else {
 		counts.Emojis += len(message.content.emojis)
 
-		if 0 < counts.Words && counts.Words <= 3 {
-			phrase := strings.Join(message.content.words, " ")
-
-			if len(phrase) < 50 {
-				stats.Frequencies.Phrases[phrase] += 1
-			}
-		}
-
 		wordCount := 0
 		letterCount := 0
 		for _, word := range message.content.words {
@@ -140,6 +132,14 @@ func analyzePersonalMessageCounts(message *Message, stats *Statistics) *Counts {
 		}
 		counts.Words += wordCount
 		counts.Letters += letterCount
+
+		if 0 < counts.Words && counts.Words <= 3 {
+			phrase := strings.Join(message.content.words, " ")
+
+			if len(phrase) < 50 {
+				stats.Frequencies.Phrases[phrase] += 1
+			}
+		}
 
 		for _, emoji := range message.content.emojis {
 			stats.Frequencies.Emojis[emoji] += 1

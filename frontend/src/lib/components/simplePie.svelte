@@ -1,13 +1,9 @@
 <script lang="ts">
+	import type { DataPoint } from "$lib/interfaces/props";
 	import Pie from "./pie.svelte";
 
 	interface Props {
 		data: DataPoint[];
-	}
-
-	interface DataPoint {
-		value: number;
-		label: string;
 	}
 
 	const { data }: Props = $props();

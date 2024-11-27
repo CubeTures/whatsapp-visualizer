@@ -1,24 +1,8 @@
 <script lang="ts">
-	import SimplePie from "../components/simplePie.svelte";
-	import { classList } from "../hooks/classList";
-	import "../styles/global.css";
+	import OverviewCard from "$lib/components/overviewCard.svelte";
+	import PieCard from "$lib/components/pieCard.svelte";
+	import SimplePie from "$lib/components/simplePie.svelte";
+	import "$lib/styles/global.css";
 </script>
 
-<svelte:body use:classList={["theme-dark", "bg-neutral-800"]} />
-
-<SimplePie
-	data={[
-		{
-			value: 2,
-			label: "A",
-		},
-		{
-			value: 5,
-			label: "B",
-		},
-		{
-			value: 3,
-			label: "C",
-		},
-	]}
-/>
+<!-- <PieCard /> -->

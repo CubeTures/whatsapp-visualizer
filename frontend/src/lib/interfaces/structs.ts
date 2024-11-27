@@ -1,4 +1,4 @@
-interface Bundle {
+export interface Bundle {
 	personal: Personal;
 	aggregate: Statistic;
 }
