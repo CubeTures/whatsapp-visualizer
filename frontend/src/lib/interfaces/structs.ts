@@ -7,14 +7,14 @@ interface Personal {
 	[name: string]: Statistic;
 }
 
-interface Statistic {
+export interface Statistic {
 	counts: Counts;
 	frequencies: Frequencies;
 	counts_by_time: CountsByTime;
 	lengths: Lengths;
 }
 
-interface Counts {
+export interface Counts {
 	messages: number;
 	words: number;
 	letters: number;
@@ -26,7 +26,7 @@ interface Counts {
 	edited: number;
 }
 
-interface Frequencies {
+export interface Frequencies {
 	phrases: FrequencyMap;
 	words: FrequencyMap;
 	emojis: FrequencyMap;
@@ -37,7 +37,7 @@ interface FrequencyMap {
 	[key: string]: number;
 }
 
-interface CountsByTime {
+export interface CountsByTime {
 	hour: Counts[];
 	weekday: Counts[];
 	month: Counts[];
@@ -55,7 +55,7 @@ interface CountsByTime {
 	};
 }
 
-interface Lengths {
+export interface Lengths {
 	longest_messages: [
 		{
 			message: string;

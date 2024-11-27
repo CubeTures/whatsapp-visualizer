@@ -3,7 +3,7 @@
 	import type { DataPoint } from "$lib/interfaces/props";
 	import SimplePie from "./simplePie.svelte";
 
-	interface Props {
+	export interface Props {
 		title: string;
 		subtitle: string;
 		footer: string;

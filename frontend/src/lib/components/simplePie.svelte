@@ -8,7 +8,7 @@
 
 	const { data }: Props = $props();
 	const getValue = (d: DataPoint) => d.value;
-	const getLabel = (d: DataPoint) => `<span>${d.label}</span>`;
+	const getLabel = (d: DataPoint) => `<span>${d.label}</br>${d.value}</span>`;
 </script>
 
 <Pie
