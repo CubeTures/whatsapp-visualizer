@@ -29,12 +29,20 @@ export function insertCommas(num: number): string {
 	const decimals = num % 1;
 	num = Math.trunc(num);
 
+	if (num == 0) {
+		result = (Math.round(decimals * 100000) / 100000).toFixed(5);
+	}
+
 	while (num > 0) {
 		const mod = Math.trunc(num % 1000);
 		num = Math.trunc(num / 1000);
 
 		if (result == "") {
-			result = `${mod}`;
+			if (decimals - 0.001 > 0) {
+				result = (Math.round(decimals * 1000) / 1000 + mod).toFixed(3);
+			} else {
+				result = `${mod}`;
+			}
 		} else {
 			result = `${mod},${result}`;
 		}

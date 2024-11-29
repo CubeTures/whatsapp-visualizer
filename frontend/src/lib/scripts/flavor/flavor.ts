@@ -106,4 +106,94 @@ export const flavor: Flavor = {
 			},
 		},
 	},
+	averages: {
+		words: {
+			description:
+				"The average number of words per message used throughout the entire conversation history.",
+			quip: {
+				normal: [
+					"_t seems to ramble...",
+					"They used _dn more words per message than _n",
+				],
+				group: ["and _db more than _b"],
+			},
+		},
+		letters: {
+			description:
+				"The average number of letters per message used throughout the entire conversation history.",
+			quip: {
+				normal: [
+					"_t's fingers must be tired.",
+					"They typed _dn more letters per message than _n",
+				],
+				group: ["and _db more than _b"],
+			},
+		},
+		emojis: {
+			description:
+				"The average number of emojis per message used throughout the entire conversation history.",
+			quip: {
+				normal: [
+					"_t can't seem to express themselves using words.",
+					"They used _dn more emojis per message than _n",
+				],
+				group: ["and _db more than _b"],
+			},
+		},
+		links: {
+			description:
+				"The average number of links per message sent throughout the entire conversation history.",
+			quip: {
+				normal: [
+					"_t is chronically online.",
+					"They sent _dn more links per message than _n",
+				],
+				group: ["and _db more than _b"],
+			},
+		},
+		media: {
+			description:
+				"The average number of media per message sent throughout the entire conversation history.",
+			quip: {
+				normal: [
+					"_t should just download snapchat.",
+					"They sent _dn more pieces of media per message than _n",
+				],
+				group: ["and _db more than _b"],
+			},
+		},
+		calls: {
+			description:
+				"The average number of calls per message made throughout the entire conversation history.",
+			quip: {
+				normal: [
+					"_t likes the sound of their own voice.",
+					"They started _dn more calls per message than _n",
+				],
+				group: ["and _db more than _b"],
+			},
+		},
+		deleted: {
+			description:
+				"The average number of messages deleted per message throughout the entire conversation history.",
+			quip: {
+				normal: [
+					"_t seems to text before they think.",
+					"They deleted _dn more messages per message than _n",
+				],
+				group: ["and _db more than _b"],
+			},
+		},
+		edited: {
+			description:
+				"The average number of messages edited per message throughout the entire conversation history.",
+			quip: {
+				normal: [
+					"_t makes a lot of typos.",
+					"They edited _dn more messages per message than _n",
+				],
+				group: ["and _db more than _b"],
+			},
+		},
+	},
 };

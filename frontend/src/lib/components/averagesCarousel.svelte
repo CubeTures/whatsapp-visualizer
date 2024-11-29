@@ -1,16 +1,16 @@
 <script lang="ts">
 	import PieCard, { type Props } from "$lib/components/pieCard.svelte";
 	import useBundle from "$lib/hooks/useBundle.svelte";
-	import type { DataPoint } from "$lib/interfaces/props";
-	import type { Counts } from "$lib/interfaces/structs";
+
+	import type { AveragesKey, DataPoint } from "$lib/interfaces/interfaces";
 	import * as Carousel from "$lib/components/ui/carousel/index";
 	import "$lib/styles/global.css";
 	import { capitalize, insertCommas } from "$lib/scripts/helpers";
-	import { getCountsFlavor } from "$lib/scripts/flavor/countFlavor";
+	import { getAveragesFlavor } from "$lib/scripts/flavor/countFlavor";
 
 	const bundle = useBundle();
 
-	const fields: (keyof Counts)[] = [
+	const fields: AveragesKey[] = [
 		"words",
 		"letters",
 		"emojis",
@@ -33,26 +33,26 @@
 		return result;
 	});
 
-	function getFieldProps(field: keyof Counts): Props {
+	function getFieldProps(field: AveragesKey): Props {
 		if (bundle.value === undefined) {
 			throw new Error("Bundle Undefined");
 		}
 
-		const flavor = getCountsFlavor(bundle.value.personal, field);
+		const flavor = getAveragesFlavor(bundle.value.personal, field);
 		const { data, sum } = getDataPoints(field);
 
 		return {
-			title: capitalize(field),
-			metric: field,
+			title: `Average ${capitalize(field)}`,
+			metric: `${field} per message`,
 			centralLabel: capitalize(field),
-			centralSubLabel: `${insertCommas(sum)} total`,
+			centralSubLabel: `${insertCommas(sum)} average`,
 			subtitle: flavor.description,
 			footer: flavor.quip,
 			data,
 		};
 	}
 
-	function getDataPoints(field: keyof Counts): {
+	function getDataPoints(field: AveragesKey): {
 		data: DataPoint[];
 		sum: number;
 	} {
@@ -62,19 +62,22 @@
 
 		let data: DataPoint[] = [];
 		let sum = 0;
+		let total = 0;
 
 		for (const [person, statistic] of Object.entries(
 			bundle.value.personal
 		)) {
-			const value = statistic.counts[field];
-			sum += value;
+			const value = statistic.counts[field] / statistic.counts.messages;
+			sum += statistic.counts[field];
+			total += statistic.counts.messages;
+
 			data.push({
 				value,
 				label: person,
 			});
 		}
 
-		return { data, sum };
+		return { data, sum: sum / total };
 	}
 </script>
 

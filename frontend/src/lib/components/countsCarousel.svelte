@@ -1,7 +1,8 @@
 <script lang="ts">
 	import PieCard, { type Props } from "$lib/components/pieCard.svelte";
 	import useBundle from "$lib/hooks/useBundle.svelte";
-	import type { DataPoint } from "$lib/interfaces/props";
+
+	import type { DataPoint } from "$lib/interfaces/interfaces";
 	import type { Counts } from "$lib/interfaces/structs";
 	import * as Carousel from "$lib/components/ui/carousel/index";
 	import "$lib/styles/global.css";

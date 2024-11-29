@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DataPoint } from "$lib/interfaces/props";
+	import type { DataPoint } from "$lib/interfaces/interfaces";
 	import { insertCommas } from "$lib/scripts/helpers";
 	import Pie from "./pie.svelte";
 

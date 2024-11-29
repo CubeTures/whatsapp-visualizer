@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Card from "$lib/components/ui/card/index";
-	import type { DataPoint } from "$lib/interfaces/props";
+
+	import type { DataPoint } from "$lib/interfaces/interfaces";
 	import SimplePie from "./simplePie.svelte";
 
 	export interface Props {

@@ -66,9 +66,9 @@
 -   svelte ui
     -   Aggregate comparison
         -   Pie Charts
-            -   All counts
+            -   ~~All counts~~
             -   Unique frequencies
-            -   Averages
+            -   ~~Averages~~
         -   Lists
             -   Longest messages
             -   Top frequencies

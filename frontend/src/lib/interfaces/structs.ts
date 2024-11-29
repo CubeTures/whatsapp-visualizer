@@ -3,9 +3,7 @@ export interface Bundle {
 	aggregate: Statistic;
 }
 
-export interface Personal {
-	[name: string]: Statistic;
-}
+export type Personal = Record<string, Statistic>;
 
 export interface Statistic {
 	counts: Counts;
@@ -27,32 +25,23 @@ export interface Counts {
 }
 
 export interface Frequencies {
-	phrases: FrequencyMap;
-	words: FrequencyMap;
-	emojis: FrequencyMap;
-	links: FrequencyMap;
+	phrases: FrequenciesMap;
+	words: FrequenciesMap;
+	emojis: FrequenciesMap;
+	links: FrequenciesMap;
 }
 
-interface FrequencyMap {
-	[key: string]: number;
-}
+type FrequenciesMap = Record<string, number>;
 
 export interface CountsByTime {
 	hour: Counts[];
 	weekday: Counts[];
 	month: Counts[];
-	year: {
-		[year: number]: Counts;
-	};
-	exact: {
-		[year: number]: {
-			[month: number]: {
-				[day: number]: {
-					[hour: number]: Counts;
-				};
-			};
-		};
-	};
+	year: Record<number, Counts>;
+	exact: Record<
+		number,
+		Record<number, Record<number, Record<number, Counts>>>
+	>;
 }
 
 export interface Lengths {

@@ -18,6 +18,9 @@ export interface Flavor {
 	counts: {
 		[key in keyof Counts]: FlavorPairUnparsed;
 	};
+	averages: {
+		[key in AveragesKey]: FlavorPairUnparsed;
+	};
 }
 
 interface FlavorPairUnparsed {
@@ -41,3 +44,10 @@ export interface FlavorStats {
 	diffBot: string;
 	length: number;
 }
+
+export interface DataPoint {
+	value: number;
+	label: string;
+}
+
+export type AveragesKey = Exclude<keyof Counts, "messages">;

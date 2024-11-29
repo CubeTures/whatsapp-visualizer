@@ -1,4 +1,8 @@
-import type { FlavorPair, FlavorStats } from "$lib/interfaces/interfaces";
+import type {
+	AveragesKey,
+	FlavorPair,
+	FlavorStats,
+} from "$lib/interfaces/interfaces";
 import type { Counts, Personal } from "$lib/interfaces/structs";
 import { strong, insertCommas, nameOf, sortByCounts, ul } from "../helpers";
 import { flavor, unovisColor } from "./flavor";
@@ -24,6 +28,31 @@ export function getCountsFlavor(
 	result += ".";
 	return {
 		description: flavor.counts[field].description,
+		quip: result,
+	};
+}
+
+export function getAveragesFlavor(
+	people: Personal,
+	field: AveragesKey
+): FlavorPair {
+	const stats = getAverageStats(people, field);
+	const { length } = stats;
+	let result = "";
+
+	for (const line of flavor.averages[field].quip.normal) {
+		result += (result === "" ? "" : " ") + insert(line, stats);
+	}
+
+	if (length > 2) {
+		for (const line of flavor.averages[field].quip.group) {
+			result += result === "" ? "" : " " + insert(line, stats);
+		}
+	}
+
+	result += ".";
+	return {
+		description: flavor.averages[field].description,
 		quip: result,
 	};
 }
@@ -60,6 +89,41 @@ function getStats(people: Personal, field: keyof Counts): FlavorStats {
 	);
 	const diffBot = strong(
 		insertCommas(people[top].counts[field] - people[bot].counts[field])
+	);
+
+	return {
+		top: nameTop,
+		next: nameNext,
+		bot: nameBot,
+		diffNext,
+		diffBot,
+		length: sorted.length,
+	};
+}
+
+function getAverageStats(people: Personal, field: AveragesKey): FlavorStats {
+	const order = Object.keys(people);
+	const sorted = sortByCounts(people, field);
+
+	const top = sorted[0];
+	const next = sorted[1];
+	const bot = sorted[sorted.length - 1];
+
+	const nameTop = ul(nameOf(top), unovisColor(order.indexOf(top)));
+	const nameNext = ul(nameOf(next), unovisColor(order.indexOf(next)));
+	const nameBot = ul(nameOf(bot), unovisColor(order.indexOf(bot)));
+
+	const diffNext = strong(
+		insertCommas(
+			people[top].counts[field] / people[top].counts.messages -
+				people[next].counts[field] / people[next].counts.messages
+		)
+	);
+	const diffBot = strong(
+		insertCommas(
+			people[top].counts[field] / people[top].counts.messages -
+				people[bot].counts[field] / people[bot].counts.messages
+		)
 	);
 
 	return {
