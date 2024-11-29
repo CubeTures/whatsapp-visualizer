@@ -11,7 +11,6 @@
 	const bundle = useBundle();
 
 	const fields: (keyof Counts)[] = [
-		"messages",
 		"words",
 		"letters",
 		"emojis",

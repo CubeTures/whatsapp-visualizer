@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	fileName := "../data/RealChat"
+	fileName := "../data/RealChat.chat"
 	log := true
 
 	messages, members := read(fileName, log)

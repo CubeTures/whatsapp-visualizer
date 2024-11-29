@@ -8,13 +8,17 @@
 	}
 
 	const { tabs, components }: Props = $props();
+
+	if (tabs.length !== components.length) {
+		throw new Error("Unequal tab lengths");
+	}
 </script>
 
-<Tabs.Root
-	value={tabs[0]}
-	class="w-[400px]"
->
-	<Tabs.List class="grid w-full grid-cols-{tabs.length}">
+<Tabs.Root value={tabs[0]}>
+	<Tabs.List
+		class="grid w-full"
+		style="grid-template-columns: repeat({tabs.length}, minmax(0, 1fr));"
+	>
 		{#each tabs as tab}
 			<Tabs.Trigger value={tab}>{tab}</Tabs.Trigger>
 		{/each}

@@ -1,7 +1,7 @@
 import type { Bundle } from "$lib/interfaces/structs";
 import { onMount } from "svelte";
 import { bundleState } from "./state.svelte";
-import chat from "$lib/data/RealChatExport.json";
+import chat from "$lib/data/RealChatExport.chat.json";
 
 const debug = false;
 
