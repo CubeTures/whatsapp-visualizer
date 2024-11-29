@@ -10,9 +10,17 @@
 		data: T[];
 		getValue: (point: T) => number;
 		getLabel: (point: T) => string;
+		centralLabel?: string;
+		centralSubLabel?: string;
 	}
 
-	const { data, getValue, getLabel }: Props<T> = $props();
+	const {
+		data,
+		getValue,
+		getLabel,
+		centralLabel,
+		centralSubLabel,
+	}: Props<T> = $props();
 
 	const triggers = {
 		[Donut.selectors.segment]: ({ data }: DonutArcDatum<T>) =>
@@ -28,6 +36,8 @@
 		showBackground={false}
 		arcWidth={30}
 		radius={100}
+		{centralLabel}
+		{centralSubLabel}
 	/>
 	<VisTooltip {triggers} />
 </VisSingleContainer>

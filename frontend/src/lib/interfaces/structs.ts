@@ -3,7 +3,7 @@ export interface Bundle {
 	aggregate: Statistic;
 }
 
-interface Personal {
+export interface Personal {
 	[name: string]: Statistic;
 }
 

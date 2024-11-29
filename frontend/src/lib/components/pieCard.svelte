@@ -8,9 +8,20 @@
 		subtitle: string;
 		footer: string;
 		data: DataPoint[];
+		metric: string;
+		centralLabel?: string;
+		centralSubLabel?: string;
 	}
 
-	const { title, subtitle, footer, data }: Props = $props();
+	const {
+		title,
+		subtitle,
+		footer,
+		data,
+		metric,
+		centralLabel,
+		centralSubLabel,
+	}: Props = $props();
 </script>
 
 <Card.Root>
@@ -19,9 +30,14 @@
 		<Card.Description>{subtitle}</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<SimplePie {data} />
+		<SimplePie
+			{data}
+			{metric}
+			{centralLabel}
+			{centralSubLabel}
+		/>
 	</Card.Content>
 	<Card.Footer>
-		<p>{footer}</p>
+		<p>{@html footer}</p>
 	</Card.Footer>
 </Card.Root>
