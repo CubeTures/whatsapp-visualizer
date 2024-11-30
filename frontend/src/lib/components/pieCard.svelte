@@ -2,7 +2,8 @@
 	import * as Card from "$lib/components/ui/card/index";
 
 	import type { DataPoint } from "$lib/interfaces/interfaces";
-	import SimplePie from "./simplePie.svelte";
+	import { insertCommas } from "$lib/scripts/helpers";
+	import Pie from "./pie.svelte";
 
 	export interface Props {
 		title: string;
@@ -23,6 +24,10 @@
 		centralLabel,
 		centralSubLabel,
 	}: Props = $props();
+
+	const getValue = (d: DataPoint) => d.value;
+	const getLabel = (d: DataPoint) =>
+		`<span><strong>${d.label}</strong></br>${insertCommas(d.value)} ${metric}</span>`;
 </script>
 
 <Card.Root>
@@ -31,9 +36,10 @@
 		<Card.Description>{subtitle}</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		<SimplePie
+		<Pie
 			{data}
-			{metric}
+			{getValue}
+			{getLabel}
 			{centralLabel}
 			{centralSubLabel}
 		/>

@@ -3,7 +3,7 @@
 	import useBundle from "$lib/hooks/useBundle.svelte";
 
 	import type { DataPoint } from "$lib/interfaces/interfaces";
-	import type { Counts } from "$lib/interfaces/structs";
+	import type { Counts, Personal } from "$lib/interfaces/structs";
 	import * as Carousel from "$lib/components/ui/carousel/index";
 	import "$lib/styles/global.css";
 	import { capitalize, insertCommas } from "$lib/scripts/helpers";
@@ -29,19 +29,15 @@
 
 		let result: Props[] = [];
 		for (const field of fields) {
-			result.push(getFieldProps(field));
+			result.push(getFieldProps(bundle.value.personal, field));
 		}
 
 		return result;
 	});
 
-	function getFieldProps(field: keyof Counts): Props {
-		if (bundle.value === undefined) {
-			throw new Error("Bundle Undefined");
-		}
-
-		const flavor = getCountsFlavor(bundle.value.personal, field);
-		const { data, sum } = getDataPoints(field);
+	function getFieldProps(people: Personal, field: keyof Counts): Props {
+		const flavor = getCountsFlavor(people, field);
+		const { data, sum } = getDataPoints(people, field);
 
 		return {
 			title: capitalize(field),
@@ -54,20 +50,17 @@
 		};
 	}
 
-	function getDataPoints(field: keyof Counts): {
+	function getDataPoints(
+		people: Personal,
+		field: keyof Counts
+	): {
 		data: DataPoint[];
 		sum: number;
 	} {
-		if (bundle.value === undefined) {
-			throw new Error("Bundle Undefined");
-		}
-
 		let data: DataPoint[] = [];
 		let sum = 0;
 
-		for (const [person, statistic] of Object.entries(
-			bundle.value.personal
-		)) {
+		for (const [person, statistic] of Object.entries(people)) {
 			const value = statistic.counts[field];
 			sum += value;
 			data.push({

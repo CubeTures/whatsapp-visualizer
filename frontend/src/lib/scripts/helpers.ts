@@ -1,4 +1,4 @@
-import type { Counts, Personal } from "$lib/interfaces/structs";
+import type { Counts, CountsByTime, Personal } from "$lib/interfaces/structs";
 
 export function capitalize(str: string, sep: string = " "): string {
 	return str
@@ -49,6 +49,18 @@ export function insertCommas(num: number): string {
 	}
 
 	return result;
+}
+
+export function numberToDate(index: number, field: keyof CountsByTime): string {
+	if (field === "hour") {
+		return "" + index;
+	} else if (field === "weekday") {
+		return "" + index;
+	} else if (field === "month") {
+		return "" + index;
+	} else {
+		throw new Error(`Cannot convert ${index} to a ${field}`);
+	}
 }
 
 export function ul(str: string, colorA?: string): string {

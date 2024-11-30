@@ -1,4 +1,4 @@
-import type { Counts } from "./structs";
+import type { Counts, CountsByTime } from "./structs";
 
 // type Paths<T> = T extends object
 // 	? {
@@ -50,4 +50,11 @@ export interface DataPoint {
 	label: string;
 }
 
+export interface StackedDataPoint {
+	values: number[];
+	index: number;
+	label: string;
+}
+
 export type AveragesKey = Exclude<keyof Counts, "messages">;
+export type TimesKey = Exclude<keyof CountsByTime, "exact">;

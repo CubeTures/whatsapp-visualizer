@@ -3,10 +3,11 @@
 	import useBundle from "$lib/hooks/useBundle.svelte";
 
 	import type { AveragesKey, DataPoint } from "$lib/interfaces/interfaces";
-	import * as Carousel from "$lib/components/ui/carousel/index";
 	import "$lib/styles/global.css";
 	import { capitalize, insertCommas } from "$lib/scripts/helpers";
 	import { getAveragesFlavor } from "$lib/scripts/flavor/countFlavor";
+	import Carousel from "./carousel.svelte";
+	import CarouselItem from "./carouselItem.svelte";
 
 	const bundle = useBundle();
 
@@ -82,21 +83,11 @@
 </script>
 
 <div class="flex justify-center">
-	<Carousel.Root
-		opts={{
-			align: "start",
-			loop: true,
-		}}
-		class="w-full max-w-lg"
-	>
-		<Carousel.Content>
-			{#each data as d}
-				<Carousel.Item>
-					<PieCard {...d} />
-				</Carousel.Item>
-			{/each}
-		</Carousel.Content>
-		<Carousel.Previous />
-		<Carousel.Next />
-	</Carousel.Root>
+	<Carousel>
+		{#each data as d}
+			<CarouselItem>
+				<PieCard {...d} />
+			</CarouselItem>
+		{/each}
+	</Carousel>
 </div>
