@@ -62,7 +62,16 @@
 
 # TODO
 
--   timestamp logs instead of just count for frequencies
+-   Info as (i) button
+-   lengths in frequency carousel
+-   Averages for stacked bars
+-   Phrases case insensitive
+    -   Make display for frequencies capitalized
+-   Sidebar for toggling people, total vs averages, and metric
+-   Timestamp for longest message
+-   Timestamp logs instead of just count for frequencies
+-   Remove aggregate
+
 -   svelte ui
     -   Aggregate comparison
         -   Pie Charts
@@ -73,7 +82,7 @@
             -   Longest messages
             -   Top frequencies
         -   Stacked Bar Charts
-            -   Count by times (show words, emojis, links, deleted, edited, media, etc.)
+            -   ~~Count by times (show words, emojis, links, deleted, edited, media, etc.)~~
         -   Expandable Sankey
             -   Exact times
         -   Multiline Charts
