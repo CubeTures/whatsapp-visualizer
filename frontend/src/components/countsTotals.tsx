@@ -1,15 +1,10 @@
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-} from "@/components/ui/carousel";
+import { CarouselItem } from "@/components/ui/carousel";
 import CountCard, { Props } from "./countCard";
 import { useBundle } from "@/hooks/context";
 import { Counts as CountsStruct } from "@/lib/structures";
 import { capitalize, capitalizeAll } from "@/lib/helpers";
 import { getCountsFlavor } from "@/lib/countsFlavor";
+import Carousel from "./carousel";
 
 function CountsTotals() {
 	const bundle = useBundle();
@@ -73,23 +68,14 @@ function CountsTotals() {
 	}
 
 	return (
-		<Carousel
-			opts={{
-				align: "start",
-				loop: true,
-			}}
-			className="mx-12">
-			<CarouselContent>
-				{data.map((d, i) => (
-					<CarouselItem
-						key={i}
-						className="md:basis-1/2 lg:basis-1/3 grid">
-						<CountCard {...d} />
-					</CarouselItem>
-				))}
-			</CarouselContent>
-			<CarouselPrevious />
-			<CarouselNext />
+		<Carousel>
+			{data.map((d, i) => (
+				<CarouselItem
+					key={i}
+					className="md:basis-1/2 lg:basis-1/3 grid">
+					<CountCard {...d} />
+				</CarouselItem>
+			))}
 		</Carousel>
 	);
 }

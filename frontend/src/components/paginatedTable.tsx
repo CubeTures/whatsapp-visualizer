@@ -143,17 +143,7 @@ function PaginatedTable<T>({ data, columns, filters, ...rest }: Props<T>) {
 	function Page() {
 		return (
 			<div className="flex items-center justify-between space-x-2 pt-4">
-				<div className="space-x-2">
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => {
-							table.firstPage();
-							setPageIndex("1");
-						}}
-						disabled={!table.getCanPreviousPage()}>
-						First
-					</Button>
+				<div className="flex flex-row-reverse flex-wrap gap-2 justify-center">
 					<Button
 						variant="outline"
 						size="sm"
@@ -165,6 +155,16 @@ function PaginatedTable<T>({ data, columns, filters, ...rest }: Props<T>) {
 						}}
 						disabled={!table.getCanPreviousPage()}>
 						Previous
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => {
+							table.firstPage();
+							setPageIndex("1");
+						}}
+						disabled={!table.getCanPreviousPage()}>
+						First
 					</Button>
 				</div>
 				<div className="grid items-center grid-cols-2 space-x-2">
@@ -186,7 +186,7 @@ function PaginatedTable<T>({ data, columns, filters, ...rest }: Props<T>) {
 					<Label
 						htmlFor={"page"}>{`/ ${table.getPageCount()}`}</Label>
 				</div>
-				<div className="space-x-2">
+				<div className="flex flex-wrap gap-2 justify-center">
 					<Button
 						variant="outline"
 						size="sm"

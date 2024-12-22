@@ -1,10 +1,4 @@
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-} from "@/components/ui/carousel";
+import { CarouselItem } from "@/components/ui/carousel";
 import CountCard, { Props } from "./countCard";
 import { useBundle } from "@/hooks/context";
 import { asFraction, capitalize, capitalizeAll } from "@/lib/helpers";
@@ -15,6 +9,7 @@ import {
 	NameType,
 	ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import Carousel from "./carousel";
 
 function CountsAverages() {
 	const bundle = useBundle();
@@ -119,26 +114,17 @@ function CountsAverages() {
 	);
 
 	return (
-		<Carousel
-			opts={{
-				align: "start",
-				loop: true,
-			}}
-			className="mx-12">
-			<CarouselContent>
-				{data.map((d, i) => (
-					<CarouselItem
-						key={i}
-						className="md:basis-1/2 lg:basis-1/3 grid">
-						<CountCard
-							{...d}
-							formatter={formatter}
-						/>
-					</CarouselItem>
-				))}
-			</CarouselContent>
-			<CarouselPrevious />
-			<CarouselNext />
+		<Carousel>
+			{data.map((d, i) => (
+				<CarouselItem
+					key={i}
+					className="md:basis-1/2 lg:basis-1/3 grid">
+					<CountCard
+						{...d}
+						formatter={formatter}
+					/>
+				</CarouselItem>
+			))}
 		</Carousel>
 	);
 }

@@ -11,7 +11,6 @@ import {
 	CardContent,
 	CardDescription,
 	CardFooter,
-	CardHeader,
 	CardTitle,
 } from "./ui/card";
 import { ContentType } from "recharts/types/component/Label";
@@ -22,6 +21,7 @@ import {
 	NameType,
 	ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import CardHeader from "./cardHeader";
 
 export interface Props<T> {
 	title: string;
@@ -152,11 +152,8 @@ function CountCard<T>({
 	}
 
 	return (
-		<Card className="grid grid-rows-subgrid row-span-3">
-			<CardHeader>
-				<CardTitle>{title}</CardTitle>
-				<CardDescription>{desc}</CardDescription>
-			</CardHeader>
+		<Card>
+			<CardHeader title={title} desc={desc}/>
 			<CardContent>
 				<CountPie />
 			</CardContent>

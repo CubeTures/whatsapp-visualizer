@@ -4,18 +4,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import PaginatedTable from "./paginatedTable";
 import { capitalize, capitalizeAll, decapitalize } from "@/lib/helpers";
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-} from "./ui/carousel";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { CarouselItem } from "./ui/carousel";
+import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { ArrowUpDown, Eye } from "lucide-react";
 import Popup from "./popup";
 import Longest from "./longest";
+import Carousel from "./carousel";
+import CardHeader from "./cardHeader";
 
 function Frequencies() {
 	const bundle = useBundle();
@@ -171,9 +167,13 @@ function Frequencies() {
 							title={`#${rank.toLocaleString()} Most Used ${
 								singular[field]
 							}`}
-							desc={`The ${decapitalize(
-								singular[field]
-							)} "${content}" was used ${count.toLocaleString()} time${count === 1 ? "" : "s"} total.`}>
+							desc={`The ${decapitalize(singular[field])} "${
+								field === "words"
+									? capitalize(content)
+									: content
+							}" was used ${count.toLocaleString()} time${
+								count === 1 ? "" : "s"
+							} total.`}>
 							{Object.entries(people).map(([person, cnt]) => (
 								<div
 									key={person}
@@ -195,11 +195,21 @@ function Frequencies() {
 	);
 
 	function Content(field: keyof FrequenciesStruct, index: number) {
+		let desc = undefined;
+
+		if (field === "phrases") {
+			desc =
+				"Phrases are any 3 word or less messages under 50 characters after links are excluded.";
+		} else if (field === "links") {
+			desc = `Only links beginning with "www", "http", and "https" were counted. Results are accumulated by hostname and may not be 100% accurate.`;
+		}
+
 		return (
 			<Card>
-				<CardHeader>
-					<CardTitle>Frequency of {capitalize(field)}</CardTitle>
-				</CardHeader>
+				<CardHeader
+					title={`Frequency of ${capitalize(field)}`}
+					desc={desc}
+				/>
 				<CardContent>
 					<PaginatedTable
 						data={data[index]}
@@ -217,26 +227,17 @@ function Frequencies() {
 	}
 
 	return (
-		<Carousel
-			className="mx-12"
-			opts={{
-				align: "start",
-				loop: true,
-			}}>
-			<CarouselContent>
-				{fields.map((field, index) => (
-					<CarouselItem
-						key={index}
-						className="flex flex-col gap-4">
-						{Content(field, index)}
-					</CarouselItem>
-				))}
-				<CarouselItem>
-					<Longest />
+		<Carousel>
+			{fields.map((field, index) => (
+				<CarouselItem
+					key={index}
+					className="flex flex-col gap-4">
+					{Content(field, index)}
 				</CarouselItem>
-			</CarouselContent>
-			<CarouselPrevious />
-			<CarouselNext />
+			))}
+			<CarouselItem>
+				<Longest />
+			</CarouselItem>
 		</Carousel>
 	);
 }

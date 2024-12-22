@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { Bundle } from "./lib/structures";
 import chat from "./data/RealChatExport.chat.json";
 import { Filters } from "./lib/types";
-import Longest from "./components/longest";
 import Nav from "./components/nav";
 import StatisticTabs from "./components/statisticTabs";
 import Frequencies from "./components/frequencies";

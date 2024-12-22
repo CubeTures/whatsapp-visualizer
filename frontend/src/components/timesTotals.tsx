@@ -2,14 +2,9 @@ import { TimesKey } from "@/lib/types";
 import TimesCard, { Props } from "./timesCard";
 import { capitalize, numberToDate } from "@/lib/helpers";
 import { useBundle, useFilters } from "@/hooks/context";
-import {
-	Carousel,
-	CarouselContent,
-	CarouselItem,
-	CarouselNext,
-	CarouselPrevious,
-} from "./ui/carousel";
+import { CarouselItem } from "./ui/carousel";
 import { useMemo } from "react";
+import Carousel from "./carousel";
 
 function TimesTotals() {
 	const bundle = useBundle();
@@ -98,20 +93,14 @@ function TimesTotals() {
 	}
 
 	return (
-		<Carousel
-			opts={{ align: "start", loop: true }}
-			className="mx-12">
-			<CarouselContent>
-				{data.map((d, i) => (
-					<CarouselItem
-						key={i}
-						className="lg:basis-1/2">
-						<TimesCard {...d} />
-					</CarouselItem>
-				))}
-			</CarouselContent>
-			<CarouselPrevious />
-			<CarouselNext />
+		<Carousel>
+			{data.map((d, i) => (
+				<CarouselItem
+					key={i}
+					className="lg:basis-1/2">
+					<TimesCard {...d} />
+				</CarouselItem>
+			))}
 		</Carousel>
 	);
 }

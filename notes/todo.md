@@ -62,32 +62,17 @@
 
 # TODO
 
--   Info as (i) button
--   lengths in frequency carousel
 -   Averages for stacked bars
+-   Info and flavor (?) for time bars
 -   Phrases case insensitive
     -   Make display for frequencies capitalized
 -   Sidebar for toggling people, total vs averages, and metric
+
 -   Timestamp for longest message
 -   Timestamp logs instead of just count for frequencies
 -   Remove aggregate
 
--   svelte ui
-    -   Aggregate comparison
-        -   Pie Charts
-            -   ~~All counts~~
-            -   Unique frequencies
-            -   ~~Averages~~
-        -   Lists
-            -   Longest messages
-            -   Top frequencies
-        -   Stacked Bar Charts
-            -   ~~Count by times (show words, emojis, links, deleted, edited, media, etc.)~~
-        -   Expandable Sankey
-            -   Exact times
-        -   Multiline Charts
-            -   Exact times
-    -   Tabs for each person + aggregate
-        -   Raw data
-        -   Word comparison
-            -   Type a word and see how many words have also been said the same amount of times
+-   Date picker
+-   Date filters
+-   Area chart for entire chat history
+    -   And brush

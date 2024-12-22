@@ -12,12 +12,15 @@ import { ScrollArea } from "./ui/scroll-area";
 interface Props {
 	trigger: React.ReactNode;
 	children: React.ReactNode;
+	srOnly?: boolean;
 	title?: React.ReactNode | string;
 	desc?: React.ReactNode | string;
 	footer?: React.ReactNode | string;
 }
 
-function Popup({ trigger, children, title, desc, footer }: Props) {
+function Popup({ trigger, children, srOnly, title, desc, footer }: Props) {
+	const cn = srOnly ? "sr-only" : "";
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -25,7 +28,7 @@ function Popup({ trigger, children, title, desc, footer }: Props) {
 				className="overflow-hidden flex flex-col max-h-min"
 				style={{ height: "calc(100dvh - 4rem)" }}>
 				{(title || desc) && (
-					<DialogHeader>
+					<DialogHeader className={cn}>
 						{title && <DialogTitle>{title}</DialogTitle>}
 						{desc && <DialogDescription>{desc}</DialogDescription>}
 					</DialogHeader>
