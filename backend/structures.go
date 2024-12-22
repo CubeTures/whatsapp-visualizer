@@ -50,10 +50,10 @@ type Counts struct {
 }
 
 type Frequencies struct {
-	Phrases map[string]int `json:"phrases"`
-	Words   map[string]int `json:"words"`
-	Emojis  map[string]int `json:"emojis"`
-	Links   map[string]int `json:"links"`
+	Phrases map[string][]time.Time `json:"phrases"`
+	Words   map[string][]time.Time `json:"words"`
+	Emojis  map[string][]time.Time `json:"emojis"`
+	Links   map[string][]time.Time `json:"links"`
 }
 
 type CountsByTime struct {
@@ -65,9 +65,12 @@ type CountsByTime struct {
 }
 
 type Lengths struct {
-	LongestMessages         *PriorityQueue[string]     `json:"longest_messages"`
-	AverageWordsPerMessage  *CountContentPair[float32] `json:"average_words_per_message"`
-	AverageEmojisPerMessage *CountContentPair[float32] `json:"average_emojis_per_message"`
+	LongestMessages *PriorityQueue[TimeContentPair] `json:"longest_messages"`
+}
+
+type TimeContentPair struct {
+	Time    time.Time `json:"date"`
+	Content string    `json:"message"`
 }
 
 type CountContentPair[T any] struct {
@@ -77,6 +80,10 @@ type CountContentPair[T any] struct {
 
 func (pair *CountContentPair[T]) MarshalJSON() ([]byte, error) {
 	return json.Marshal(pair.content)
+}
+
+func (b *Bundle) MarshalJSON() ([]byte, error) {
+	return json.Marshal(b.Personal)
 }
 
 func (stats *Statistics) String() string {
@@ -96,7 +103,7 @@ func (cbt *CountsByTime) String() string {
 }
 
 func (ln *Lengths) String() string {
-	return fmt.Sprintf("Lengths:\nLongest Message: %v\nAverage Words Per Message: %v\nAverage Emojis Per Message: %v\n", ln.LongestMessages.String(), ln.AverageWordsPerMessage.content, ln.AverageEmojisPerMessage.content)
+	return fmt.Sprintf("Lengths:\nLongest Messages: %v\n", ln.LongestMessages.String())
 }
 
 func StringMonth(months [12]Counts) string {

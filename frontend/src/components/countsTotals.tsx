@@ -40,7 +40,7 @@ function CountsTotals() {
 	function getFieldProps(field: keyof CountsStruct): Props<Data> {
 		const name = capitalize(field);
 		const points = getDataPoints(field);
-		const flavor = getCountsFlavor(bundle.personal, field);
+		const flavor = getCountsFlavor(bundle, field);
 
 		return {
 			title: `Total ${name}`,
@@ -57,7 +57,7 @@ function CountsTotals() {
 	function getDataPoints(field: keyof CountsStruct): Data[] {
 		let result = [];
 
-		for (const [person, statistic] of Object.entries(bundle.personal)) {
+		for (const [person, statistic] of Object.entries(bundle)) {
 			result.push({
 				name: capitalizeAll(person),
 				value: statistic.counts[field],

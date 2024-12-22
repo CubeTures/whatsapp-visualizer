@@ -1,5 +1,5 @@
 import { Info } from "lucide-react";
-import { CardDescription, CardTitle, CardHeader as Header } from "./ui/card";
+import { CardTitle, CardHeader as Header } from "./ui/card";
 import { Button } from "./ui/button";
 import Popup from "./popup";
 

@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 import { ArrowUpDown, Eye } from "lucide-react";
 import Popup from "./popup";
-import { Checkbox } from "./ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 function Longest() {
@@ -23,7 +22,7 @@ function Longest() {
 	function getData(): Message[] {
 		let result: Message[] = [];
 
-		for (const [person, statistic] of Object.entries(bundle.personal)) {
+		for (const [person, statistic] of Object.entries(bundle)) {
 			for (const msg of statistic.lengths.longest_messages) {
 				result.push({
 					sender: person,

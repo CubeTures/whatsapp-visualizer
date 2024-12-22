@@ -1,4 +1,4 @@
-import { Counts, Personal } from "./structures";
+import { Counts, Bundle } from "./structures";
 import { AveragesKey, TimesKey } from "./types";
 
 export function isNumber(num: any): num is number {
@@ -37,22 +37,22 @@ export function nameOf(name: string): string {
 }
 
 export function sortByCounts(
-	personal: Personal,
+	bundle: Bundle,
 	field: keyof Counts
 ): string[] {
-	return Object.keys(personal).sort(
-		(a, b) => personal[b].counts[field] - personal[a].counts[field]
+	return Object.keys(bundle).sort(
+		(a, b) => bundle[b].counts[field] - bundle[a].counts[field]
 	);
 }
 
 export function sortByAverage(
-	personal: Personal,
+	bundle: Bundle,
 	field: AveragesKey
 ): string[] {
-	return Object.keys(personal).sort(
+	return Object.keys(bundle).sort(
 		(a, b) =>
-			personal[b].counts[field] / personal[b].counts.messages -
-			personal[a].counts[field] / personal[a].counts.messages
+			bundle[b].counts[field] / bundle[b].counts.messages -
+			bundle[a].counts[field] / bundle[a].counts.messages
 	);
 }
 

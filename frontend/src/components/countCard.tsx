@@ -9,9 +9,7 @@ import {
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
-	CardTitle,
 } from "./ui/card";
 import { ContentType } from "recharts/types/component/Label";
 import { DataKey } from "recharts/types/util/types";

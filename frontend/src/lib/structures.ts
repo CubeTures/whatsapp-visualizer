@@ -1,9 +1,4 @@
-export interface Bundle {
-	personal: Personal;
-	aggregate: Statistic;
-}
-
-export type Personal = Record<string, Statistic>;
+export type Bundle = Record<string, Statistic>;
 
 export interface Statistic {
 	counts: Counts;
@@ -31,7 +26,7 @@ export interface Frequencies {
 	links: FrequenciesMap;
 }
 
-type FrequenciesMap = Record<string, number>;
+type FrequenciesMap = Record<string, string[]>;
 
 export interface CountsByTime {
 	hour: Counts[];
@@ -46,9 +41,8 @@ export interface CountsByTime {
 
 export interface Lengths {
 	longest_messages: {
+		date: string;
 		message: string;
 		length: number;
 	}[];
-	average_words_per_message: number;
-	average_emojis_per_message: number;
 }

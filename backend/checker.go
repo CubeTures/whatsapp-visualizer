@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
+
+const logCheck = false
 
 func checkBundle(bundle *Bundle) {
 	checkPersonalCounts(bundle)
@@ -10,13 +15,17 @@ func checkBundle(bundle *Bundle) {
 
 func checkPersonalCounts(bundle *Bundle) {
 	bundle.Personal.Range(func(person string, stats *Statistics) {
-		fmt.Printf("\n===== Checking Personal (%v) =====\n", person)
+		if logCheck {
+			fmt.Printf("\n===== Checking Personal (%v) =====\n", person)
+		}
 		checkIndividualCounts(stats)
 	})
 }
 
 func checkAggregateCounts(bundle *Bundle) {
-	fmt.Println("\n===== Checking Aggregate =====")
+	if logCheck {
+		fmt.Println("\n===== Checking Aggregate =====")
+	}
 	checkIndividualCounts(bundle.Aggregate)
 }
 
@@ -26,24 +35,28 @@ func checkIndividualCounts(stats *Statistics) {
 	cbt := []string{"Hour", "Weekday", "Month", "Year", "Exact"}
 
 	for i, mp := range maps {
-		fmt.Printf("\nChecking %v (Frequencies):\n", mp)
+		if logCheck {
+			fmt.Printf("\nChecking %v (Frequencies):\n", mp)
+		}
 		count := stats.Counts.getField(mp)
 		m := stats.Frequencies.getMap(mp)
 		c := accumulateMap(m)
 
 		if c != count {
-			fmt.Printf("%v failed check: %v (expected), %v (received)\n", maps[i], count, c)
+			panic(fmt.Sprintf("%v failed check: %v (expected), %v (received)\n", maps[i], count, c))
 		}
 	}
 
 	for _, field := range fields {
-		fmt.Printf("\nChecking %v (Counts by Time):\n", field)
+		if logCheck {
+			fmt.Printf("\nChecking %v (Counts by Time):\n", field)
+		}
 		count := stats.Counts.getField(field)
 		acc := accumulateField(stats, field)
 
 		for i, c := range acc {
 			if c != count {
-				fmt.Printf("%v failed check: %v (expected), %v (received)\n", cbt[i], count, c)
+				panic(fmt.Sprintf("%v failed check: %v (expected), %v (received)\n", cbt[i], count, c))
 			}
 		}
 	}
@@ -112,19 +125,20 @@ func (count *Counts) getField(field string) int {
 	case "Edited":
 		return count.Edited
 	default:
-		panic(fmt.Sprintf("%v is not a key of Counts", field))
+		panic(
+			fmt.Sprintf("%v is not a key of Counts", field))
 	}
 }
 
-func accumulateMap(m map[string]int) int {
+func accumulateMap(m map[string][]time.Time) int {
 	acc := 0
 	for _, value := range m {
-		acc += value
+		acc += len(value)
 	}
 	return acc
 }
 
-func (f *Frequencies) getMap(field string) map[string]int {
+func (f *Frequencies) getMap(field string) map[string][]time.Time {
 	switch field {
 	case "Words":
 		return f.Words
@@ -133,19 +147,24 @@ func (f *Frequencies) getMap(field string) map[string]int {
 	case "Links":
 		return f.Links
 	default:
-		panic(fmt.Sprintf("%v is not a key of Frequencies", field))
+		panic(
+			fmt.Sprintf("%v is not a key of Frequencies", field))
 	}
 }
 
 func checkAggregateConsistency(bundle *Bundle) {
-	fmt.Println("\n===== Checking Consistency =====")
+	if logCheck {
+		fmt.Println("\n===== Checking Consistency =====")
+	}
 
 	maps := []string{"Words", "Emojis", "Links"}
 	fields := []string{"Messages", "Words", "Letters", "Emojis", "Links", "Media", "Calls", "Deleted", "Edited"}
 	cbt := []string{"Hour", "Weekday", "Month", "Year", "Exact"}
 
 	for i, mp := range maps {
-		fmt.Printf("\nChecking %v (Frequencies):\n", mp)
+		if logCheck {
+			fmt.Printf("\nChecking %v (Frequencies):\n", mp)
+		}
 		c := 0
 		count := bundle.Aggregate.Counts.getField(mp)
 
@@ -155,12 +174,14 @@ func checkAggregateConsistency(bundle *Bundle) {
 		})
 
 		if c != count {
-			fmt.Printf("%v failed check: %v (expected), %v (received)\n", maps[i], count, c)
+			panic(fmt.Sprintf("%v failed check: %v (expected), %v (received)\n", maps[i], count, c))
 		}
 	}
 
 	for _, field := range fields {
-		fmt.Printf("\nChecking %v (Counts by Time):\n", field)
+		if logCheck {
+			fmt.Printf("\nChecking %v (Counts by Time):\n", field)
+		}
 		count := bundle.Aggregate.Counts.getField(field)
 
 		var acc []int
@@ -178,7 +199,7 @@ func checkAggregateConsistency(bundle *Bundle) {
 
 		for i, c := range acc {
 			if c != count {
-				fmt.Printf("%v failed check: %v (expected), %v (received)\n", cbt[i], count, c)
+				panic(fmt.Sprintf("%v failed check: %v (expected), %v (received)\n", cbt[i], count, c))
 			}
 		}
 	}

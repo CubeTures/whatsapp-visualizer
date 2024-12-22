@@ -24,7 +24,7 @@ func (pq *PriorityQueue[T]) Push(value T, priority int) {
 
 func (pq *PriorityQueue[T]) Pop() T {
 	item := heap.Pop(pq.pq).(*Item[T])
-	return item.Value
+	return item.value
 }
 
 func (pq *PriorityQueue[T]) Peek() (value T, priority int) {
@@ -33,7 +33,7 @@ func (pq *PriorityQueue[T]) Peek() (value T, priority int) {
 		return value, priority
 	}
 
-	return item.Value, item.Priority
+	return item.value, item.Priority
 }
 
 func (pq *PriorityQueue[T]) Len() int {
@@ -64,7 +64,7 @@ func (a *PriorityQueue[T]) Join(b *PriorityQueue[T]) {
 
 func (pq *PriorityQueue[T]) Range(f func(priority int, value T)) {
 	for _, item := range *(pq.pq) {
-		f(item.Priority, item.Value)
+		f(item.Priority, item.value)
 	}
 }
 
@@ -78,7 +78,7 @@ func (pq *PriorityQueue[T]) String() string {
 	builder.WriteString("[ ")
 
 	for _, item := range slice {
-		builder.WriteString(fmt.Sprintf("(%v: %v) ", item.Priority, item.Value))
+		builder.WriteString(fmt.Sprintf("(%v: %v) ", item.Priority, item.value))
 	}
 
 	builder.WriteString("]")
@@ -90,13 +90,40 @@ func (pq *PriorityQueue[T]) MarshalJSON() ([]byte, error) {
 }
 
 type Item[T any] struct {
-	Value    T   `json:"message"`
+	value    T
 	Priority int `json:"length"`
 	index    int
 }
 
+func (i *Item[T]) MarshalJSON() ([]byte, error) {
+	// Marshal the Value field
+	valueBytes, err := json.Marshal(i.value)
+	if err != nil {
+		return nil, err
+	}
+
+	// Unmarshal Value into a map to flatten it
+	var valueMap map[string]interface{}
+	if err := json.Unmarshal(valueBytes, &valueMap); err != nil {
+		return nil, err
+	}
+
+	// Create the base map for the rest of the fields
+	baseMap := map[string]interface{}{
+		"length": i.Priority,
+	}
+
+	// Merge Value fields into the base map
+	for k, v := range valueMap {
+		baseMap[k] = v
+	}
+
+	// Marshal the combined map to JSON
+	return json.Marshal(baseMap)
+}
+
 func CreateItem[T any](value T, priority int) *Item[T] {
-	return &Item[T]{Value: value, Priority: priority, index: -1}
+	return &Item[T]{value: value, Priority: priority, index: -1}
 }
 
 type PQ[T any] []*Item[T]

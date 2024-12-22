@@ -46,7 +46,7 @@ function CountsAverages() {
 	function getFieldProps(field: AveragesKey): Props<Data> {
 		const name = capitalize(field);
 		const { data, average } = getDataPoints(field);
-		const flavor = getAveragesFlavor(bundle.personal, field);
+		const flavor = getAveragesFlavor(bundle, field);
 
 		return {
 			title: `Average ${name}`,
@@ -69,7 +69,7 @@ function CountsAverages() {
 		let sum = 0;
 		let total = 0;
 
-		for (const [person, statistic] of Object.entries(bundle.personal)) {
+		for (const [person, statistic] of Object.entries(bundle)) {
 			const count = statistic.counts[field];
 			const _total = statistic.counts.messages;
 			const value = count / _total;
@@ -92,7 +92,7 @@ function CountsAverages() {
 		};
 	}
 
-	const formatter: Formatter<ValueType, NameType> = (value, name, item) => (
+	const formatter: Formatter<ValueType, NameType> = (_, name, item) => (
 		<>
 			<div
 				className="h-2.5 w-2.5 shrink-0 rounded-[2px] bg-[--color-bg]"

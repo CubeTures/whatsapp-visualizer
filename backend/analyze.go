@@ -4,6 +4,7 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+	"time"
 	"unicode"
 )
 
@@ -71,19 +72,17 @@ func newStatistic() *Statistics {
 	return &Statistics{
 		Counts: &Counts{},
 		Frequencies: &Frequencies{
-			Phrases: make(map[string]int),
-			Words:   make(map[string]int),
-			Emojis:  make(map[string]int),
-			Links:   make(map[string]int),
+			Phrases: make(map[string][]time.Time),
+			Words:   make(map[string][]time.Time),
+			Emojis:  make(map[string][]time.Time),
+			Links:   make(map[string][]time.Time),
 		},
 		CountsByTime: &CountsByTime{
 			Year:  make(map[int]*Counts),
 			Exact: make(map[int]map[int]map[int]map[int]*Counts),
 		},
 		Lengths: &Lengths{
-			LongestMessages:         CreateQueue[string](50),
-			AverageWordsPerMessage:  &CountContentPair[float32]{},
-			AverageEmojisPerMessage: &CountContentPair[float32]{},
+			LongestMessages: CreateQueue[TimeContentPair](50),
 		},
 	}
 }
@@ -127,7 +126,7 @@ func analyzePersonalMessageCounts(message *Message, stats *Statistics) *Counts {
 			if valid {
 				wordCount += 1
 				letterCount += len(strings.Split(clean, ""))
-				stats.Frequencies.Words[clean] += 1
+				stats.Frequencies.Words[clean] = append(stats.Frequencies.Words[clean], message.date)
 			}
 		}
 		counts.Words += wordCount
@@ -137,12 +136,12 @@ func analyzePersonalMessageCounts(message *Message, stats *Statistics) *Counts {
 			phrase := strings.Join(message.content.words, " ")
 
 			if len(phrase) < 50 {
-				stats.Frequencies.Phrases[phrase] += 1
+				stats.Frequencies.Phrases[phrase] = append(stats.Frequencies.Phrases[phrase], message.date)
 			}
 		}
 
 		for _, emoji := range message.content.emojis {
-			stats.Frequencies.Emojis[emoji] += 1
+			stats.Frequencies.Emojis[emoji] = append(stats.Frequencies.Emojis[emoji], message.date)
 		}
 
 		for _, link := range message.content.links {
@@ -155,7 +154,7 @@ func analyzePersonalMessageCounts(message *Message, stats *Statistics) *Counts {
 			host := l.Hostname()
 
 			if host != "" {
-				stats.Frequencies.Links[host] += 1
+				stats.Frequencies.Links[host] = append(stats.Frequencies.Links[host], message.date)
 				counts.Links += 1
 			}
 		}
@@ -223,13 +222,8 @@ func updateExactTimeCount(exact map[int]map[int]map[int]map[int]*Counts, counts 
 
 func analyzePersonalMessageLength(message *Message, stats *Statistics) {
 	content := strings.Join(message.content.words, " ")
-	stats.Lengths.LongestMessages.PushIfLowerPriority(content, len(message.content.words))
-
-	length := len(message.content.words)
-	stats.Lengths.AverageWordsPerMessage = computeRunningAverage(stats.Lengths.AverageWordsPerMessage, length)
-
-	length = len(message.content.emojis)
-	stats.Lengths.AverageEmojisPerMessage = computeRunningAverage(stats.Lengths.AverageEmojisPerMessage, length)
+	pair := TimeContentPair{Time: message.date, Content: content}
+	stats.Lengths.LongestMessages.PushIfLowerPriority(pair, len(message.content.words))
 }
 
 func computeRunningAverage(pair *CountContentPair[float32], length int) *CountContentPair[float32] {
@@ -271,10 +265,10 @@ func (a *Statistics) Join(b *Statistics) {
 	a.Counts.Join(b.Counts)
 
 	// frequency
-	joinMapInts(a.Frequencies.Phrases, b.Frequencies.Phrases)
-	joinMapInts(a.Frequencies.Words, b.Frequencies.Words)
-	joinMapInts(a.Frequencies.Emojis, b.Frequencies.Emojis)
-	joinMapInts(a.Frequencies.Links, b.Frequencies.Links)
+	joinMapDates(a.Frequencies.Phrases, b.Frequencies.Phrases)
+	joinMapDates(a.Frequencies.Words, b.Frequencies.Words)
+	joinMapDates(a.Frequencies.Emojis, b.Frequencies.Emojis)
+	joinMapDates(a.Frequencies.Links, b.Frequencies.Links)
 
 	// time
 	joinTimes(&a.CountsByTime.Hour, &b.CountsByTime.Hour)
@@ -285,13 +279,11 @@ func (a *Statistics) Join(b *Statistics) {
 
 	// length
 	a.Lengths.LongestMessages.Join(b.Lengths.LongestMessages)
-	joinRunningAverages(a.Lengths.AverageWordsPerMessage, b.Lengths.AverageWordsPerMessage)
-	joinRunningAverages(a.Lengths.AverageEmojisPerMessage, b.Lengths.AverageEmojisPerMessage)
 }
 
-func joinMapInts[T comparable](a, b map[T]int) {
+func joinMapDates[T comparable](a, b map[T][]time.Time) {
 	for key, value := range b {
-		a[key] += value
+		a[key] = append(a[key], value...)
 	}
 }
 

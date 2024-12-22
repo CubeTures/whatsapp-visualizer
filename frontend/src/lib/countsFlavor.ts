@@ -1,6 +1,6 @@
 import type { AveragesKey, FlavorPair, FlavorStats } from "./types.ts";
 import { flavor } from "./flavor.ts";
-import { Counts, Personal } from "./structures.ts";
+import { Counts, Bundle } from "./structures.ts";
 import {
 	asFraction,
 	chartColor,
@@ -12,10 +12,10 @@ import {
 } from "./helpers.ts";
 
 export function getCountsFlavor(
-	people: Personal,
+	bundle: Bundle,
 	field: keyof Counts
 ): FlavorPair {
-	const stats = getStats(people, field);
+	const stats = getStats(bundle, field);
 	const { length } = stats;
 	let result = "";
 
@@ -37,10 +37,10 @@ export function getCountsFlavor(
 }
 
 export function getAveragesFlavor(
-	people: Personal,
+	bundle: Bundle,
 	field: AveragesKey
 ): FlavorPair {
-	const stats = getAverageStats(people, field);
+	const stats = getAverageStats(bundle, field);
 	const { length } = stats;
 	let result = "";
 
@@ -76,9 +76,9 @@ function insert(line: string, stats: FlavorStats): string {
 	return result;
 }
 
-function getStats(people: Personal, field: keyof Counts): FlavorStats {
-	const order = Object.keys(people);
-	const sorted = sortByCounts(people, field);
+function getStats(bundle: Bundle, field: keyof Counts): FlavorStats {
+	const order = Object.keys(bundle);
+	const sorted = sortByCounts(bundle, field);
 
 	const top = sorted[0];
 	const next = sorted[1];
@@ -90,11 +90,11 @@ function getStats(people: Personal, field: keyof Counts): FlavorStats {
 
 	const diffNext = strong(
 		(
-			people[top].counts[field] - people[next].counts[field]
+			bundle[top].counts[field] - bundle[next].counts[field]
 		).toLocaleString()
 	);
 	const diffBot = strong(
-		(people[top].counts[field] - people[bot].counts[field]).toLocaleString()
+		(bundle[top].counts[field] - bundle[bot].counts[field]).toLocaleString()
 	);
 
 	return {
@@ -107,9 +107,9 @@ function getStats(people: Personal, field: keyof Counts): FlavorStats {
 	};
 }
 
-function getAverageStats(people: Personal, field: AveragesKey): FlavorStats {
-	const order = Object.keys(people);
-	const sorted = sortByAverage(people, field);
+function getAverageStats(bundle: Bundle, field: AveragesKey): FlavorStats {
+	const order = Object.keys(bundle);
+	const sorted = sortByAverage(bundle, field);
 
 	const top = sorted[0];
 	const next = sorted[1];
@@ -121,14 +121,14 @@ function getAverageStats(people: Personal, field: AveragesKey): FlavorStats {
 
 	const diffNext = strong(
 		asFraction(
-			people[top].counts[field] - people[next].counts[field],
-			people[top].counts.messages + people[next].counts.messages
+			bundle[top].counts[field] - bundle[next].counts[field],
+			bundle[top].counts.messages + bundle[next].counts.messages
 		).toLocaleString()
 	);
 	const diffBot = strong(
 		asFraction(
-			people[top].counts[field] - people[bot].counts[field],
-			people[top].counts.messages + people[bot].counts.messages
+			bundle[top].counts[field] - bundle[bot].counts[field],
+			bundle[top].counts.messages + bundle[bot].counts.messages
 		).toLocaleString()
 	);
 

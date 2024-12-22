@@ -36,7 +36,7 @@ function TimesTotals() {
 			desc: "TODO: desc",
 			footer: "TODO: footer",
 			data: getFieldData(field),
-			dataKeys: Object.keys(bundle.personal),
+			dataKeys: Object.keys(bundle),
 			axisNameKey: "__axis",
 			field,
 			tickFormatter: tickFormatter.bind(null, field),
@@ -46,7 +46,7 @@ function TimesTotals() {
 	function getFieldData(field: TimesKey): Data[] {
 		let result: Record<number, Data> = {};
 
-		for (const [person, statistic] of Object.entries(bundle.personal)) {
+		for (const [person, statistic] of Object.entries(bundle)) {
 			if (field === "year") {
 				for (const [year, counts] of Object.entries(
 					statistic.counts_by_time[field]
@@ -84,11 +84,7 @@ function TimesTotals() {
 			});
 	}
 
-	function tickFormatter(
-		field: TimesKey,
-		value: string | number,
-		index: number
-	): string {
+	function tickFormatter(field: TimesKey, value: string | number): string {
 		return numberToDate(field, value as number);
 	}
 

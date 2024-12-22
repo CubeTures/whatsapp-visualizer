@@ -3,7 +3,7 @@ import Container from "./components/container";
 import { BundleContext, FilterContext } from "./hooks/context";
 import { useEffect, useState } from "react";
 import { Bundle } from "./lib/structures";
-import chat from "./data/RealChatExport.chat.json";
+import chat from "./data/RealChatExport.new.chat.json";
 import { Filters } from "./lib/types";
 import Nav from "./components/nav";
 import StatisticTabs from "./components/statisticTabs";
@@ -17,7 +17,7 @@ function App() {
 		const bundle = chat as Bundle;
 
 		setFilters({
-			people: Object.keys(bundle.personal),
+			people: Object.keys(bundle),
 			statistic: "totals",
 			metric: "messages",
 			start: new Date(),

@@ -19,7 +19,7 @@ import {
 	TableRow,
 } from "./ui/table";
 import { Button } from "./ui/button";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Input } from "./ui/input";
 import { TableFilter } from "@/lib/types";
 import { Label } from "./ui/label";

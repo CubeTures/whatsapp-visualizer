@@ -67,10 +67,8 @@
 -   Phrases case insensitive
     -   Make display for frequencies capitalized
 -   Sidebar for toggling people, total vs averages, and metric
-
--   Timestamp for longest message
--   Timestamp logs instead of just count for frequencies
--   Remove aggregate
+-   Display timestamp for longest message
+-   Display timestamps for frequencies
 
 -   Date picker
 -   Date filters

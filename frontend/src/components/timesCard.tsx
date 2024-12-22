@@ -14,7 +14,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { chartColor, numberToDate } from "@/lib/helpers";
 import { DataKey } from "recharts/types/util/types";
 import {
@@ -86,12 +86,7 @@ function TimesCard<T, K extends keyof T>({
 		return numberToDate(field, payload[0].payload.__axis, "long");
 	};
 
-	const formatter: Formatter<ValueType, NameType> = (
-		value,
-		name,
-		item,
-		index
-	) => (
+	const formatter: Formatter<ValueType, NameType> = (_, name, item) => (
 		<>
 			<div
 				className="h-2.5 w-2.5 shrink-0 rounded-[2px] bg-[--color-bg]"

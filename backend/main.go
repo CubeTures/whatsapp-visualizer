@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	fileName := "../data/RealChat.chat"
+	fileName := "../data/RealChat"
 	log := true
 
 	messages, members := read(fileName, log)
@@ -17,7 +17,7 @@ func read(fileName string, log bool) ([]*Message, []string) {
 		fmt.Println("Starting Read")
 	}
 
-	messages, members := ReadFilePooled(fileName + ".txt")
+	messages, members := ReadFilePooled(fileName + ".chat.txt")
 
 	if log {
 		fmt.Println("Completed Read")
@@ -45,8 +45,8 @@ func write(fileName string, bundle *Bundle, log bool) {
 		fmt.Println("Starting Write")
 	}
 
-	// writeFileDump(fileName+"Export.txt", bundle)
-	writeFile(fileName+"Export.json", bundle)
+	// writeFileDump(fileName+"Export.chat.txt", bundle)
+	writeFile(fileName+"Export.chat.json", bundle)
 
 	if log {
 		fmt.Println("Completed Write")

@@ -52,7 +52,7 @@ function Frequencies() {
 	function getFieldData(field: keyof FrequenciesStruct): Frequency[] {
 		let result: Record<string, Frequency> = {};
 
-		for (const [person, statistic] of Object.entries(bundle.personal)) {
+		for (const [person, statistic] of Object.entries(bundle)) {
 			for (const [key, value] of Object.entries(
 				statistic.frequencies[field]
 			)) {
@@ -62,14 +62,14 @@ function Frequencies() {
 				if (result[key] === undefined) {
 					result[key] = {
 						content: key,
-						count: value,
+						count: value.length,
 						rank: -1,
 						people,
 					};
 				} else {
 					result[key] = {
 						...result[key],
-						count: result[key].count + value,
+						count: result[key].count + value.length,
 						people,
 					};
 				}
