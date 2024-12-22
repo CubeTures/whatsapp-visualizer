@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { ArrowUpDown, Eye } from "lucide-react";
 import Popup from "./popup";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import Sorter from "./sorter";
 
 function Longest() {
 	const bundle = useBundle();
@@ -47,33 +48,11 @@ function Longest() {
 		},
 		{
 			accessorKey: "sender",
-			header: ({ column }) => {
-				return (
-					<Button
-						variant="ghost"
-						onClick={() =>
-							column.toggleSorting(column.getIsSorted() === "asc")
-						}>
-						Sender
-						<ArrowUpDown className="ml-2 h-4 w-4" />
-					</Button>
-				);
-			},
+			header: (props) => Sorter("Sender", props),
 		},
 		{
 			accessorKey: "length",
-			header: ({ column }) => {
-				return (
-					<Button
-						variant="ghost"
-						onClick={() =>
-							column.toggleSorting(column.getIsSorted() === "asc")
-						}>
-						Length
-						<ArrowUpDown className="ml-2 h-4 w-4" />
-					</Button>
-				);
-			},
+			header: (props) => Sorter("Length", props),
 			cell: ({ row }) => {
 				const value = row.getValue<number>("length").toLocaleString();
 
@@ -117,10 +96,10 @@ function Longest() {
 		return (
 			<div className="flex flex-col gap-4">
 				<p className="border-l-4 border-l-destructive rounded p-2 px-4 bg-destructive/30">
-					<span className="font-bold">Note</span>: Long messages are often accompanied by strong emotions
-					-- both good and bad. Make sure you're in a position where
-					you're ok with seeing that before you look at any of the
-					following messages.
+					<span className="font-bold">Note</span>: Long messages are
+					often accompanied by strong emotions -- both good and bad.
+					Make sure you're in a position where you're ok with seeing
+					that before you look at any of the following messages.
 				</p>
 				<Button
 					className="self-center"

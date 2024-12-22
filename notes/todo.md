@@ -68,7 +68,6 @@
     -   Make display for frequencies capitalized
 -   Sidebar for toggling people, total vs averages, and metric
 -   Display timestamp for longest message
--   Display timestamps for frequencies
 
 -   Date picker
 -   Date filters

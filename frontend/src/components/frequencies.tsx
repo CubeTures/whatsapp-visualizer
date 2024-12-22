@@ -3,25 +3,31 @@ import { Frequencies as FrequenciesStruct } from "@/lib/structures";
 import { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import PaginatedTable from "./paginatedTable";
-import { capitalize, capitalizeAll, decapitalize } from "@/lib/helpers";
+import { capitalize } from "@/lib/helpers";
 import { CarouselItem } from "./ui/carousel";
 import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
-import { ArrowUpDown, Eye } from "lucide-react";
-import Popup from "./popup";
 import Longest from "./longest";
 import Carousel from "./carousel";
 import CardHeader from "./cardHeader";
+import FrequenciesDetailed from "./frequenciesDetailed";
+import Sorter from "./sorter";
+
+export interface Frequency {
+	content: string;
+	count: number;
+	rank: number;
+	people: Record<string, Date[]>;
+}
+
+export const singular: Record<keyof FrequenciesStruct, string> = {
+	phrases: "Phrase",
+	words: "Word",
+	emojis: "Emoji",
+	links: "Link",
+};
 
 function Frequencies() {
 	const bundle = useBundle();
-
-	interface Frequency {
-		content: string;
-		count: number;
-		rank: number;
-		people: Record<string, number>;
-	}
 
 	const fields: (keyof FrequenciesStruct)[] = [
 		"phrases",
@@ -29,13 +35,6 @@ function Frequencies() {
 		"emojis",
 		"links",
 	];
-
-	const singular: Record<keyof FrequenciesStruct, string> = {
-		phrases: "Phrase",
-		words: "Word",
-		emojis: "Emoji",
-		links: "Link",
-	};
 
 	const data = useMemo(getData, [bundle]);
 
@@ -53,23 +52,25 @@ function Frequencies() {
 		let result: Record<string, Frequency> = {};
 
 		for (const [person, statistic] of Object.entries(bundle)) {
-			for (const [key, value] of Object.entries(
+			for (const [key, dates] of Object.entries(
 				statistic.frequencies[field]
 			)) {
 				const people: any = result[key]?.people ?? {};
-				people[person] = value;
+				people[person] = dates
+					.map((d) => new Date(d))
+					.sort((a, b) => b.valueOf() - a.valueOf());
 
 				if (result[key] === undefined) {
 					result[key] = {
 						content: key,
-						count: value.length,
+						count: dates.length,
 						rank: -1,
 						people,
 					};
 				} else {
 					result[key] = {
 						...result[key],
-						count: result[key].count + value.length,
+						count: result[key].count + dates.length,
 						people,
 					};
 				}
@@ -92,20 +93,7 @@ function Frequencies() {
 			},
 			{
 				accessorKey: "content",
-				header: ({ column }) => {
-					return (
-						<Button
-							variant="ghost"
-							onClick={() =>
-								column.toggleSorting(
-									column.getIsSorted() === "asc"
-								)
-							}>
-							{singular[field]}
-							<ArrowUpDown className="ml-2 h-4 w-4" />
-						</Button>
-					);
-				},
+				header: (props) => Sorter(singular[field], props),
 				cell: ({ row }) => {
 					let content = row.getValue<string>("content");
 					if (field === "words") {
@@ -117,22 +105,7 @@ function Frequencies() {
 			},
 			{
 				accessorKey: "count",
-				header: ({ column }) => {
-					return (
-						<div>
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
-								}>
-								Times Used
-								<ArrowUpDown className="ml-2 h-4 w-4" />
-							</Button>
-						</div>
-					);
-				},
+				header: (props) => Sorter("Times Used", props),
 				cell: ({ row }) => {
 					const value = (
 						row.getValue("count") as number
@@ -148,48 +121,12 @@ function Frequencies() {
 			{
 				accessorKey: "people",
 				header: "People",
-				cell: ({ row }) => {
-					const content = row.getValue<string>("content");
-					const rank = row.getValue<number>("rank");
-					const count = row.getValue<number>("count");
-					const people =
-						row.getValue<Record<string, number>>("people");
-
-					const trigger = (
-						<Button variant="ghost">
-							<Eye className="h-4 w-4" />
-						</Button>
-					);
-
-					return (
-						<Popup
-							trigger={trigger}
-							title={`#${rank.toLocaleString()} Most Used ${
-								singular[field]
-							}`}
-							desc={`The ${decapitalize(singular[field])} "${
-								field === "words"
-									? capitalize(content)
-									: content
-							}" was used ${count.toLocaleString()} time${
-								count === 1 ? "" : "s"
-							} total.`}>
-							{Object.entries(people).map(([person, cnt]) => (
-								<div
-									key={person}
-									className="flex justify-between">
-									<div>{capitalizeAll(person)}</div>
-									<div>
-										<span className="font-mono font-tabular">
-											{cnt.toLocaleString()}
-										</span>{" "}
-										time{cnt === 1 ? "" : "s"}
-									</div>
-								</div>
-							))}
-						</Popup>
-					);
-				},
+				cell: (cell) => (
+					<FrequenciesDetailed
+						field={field}
+						cell={cell}
+					/>
+				),
 			},
 		]
 	);
