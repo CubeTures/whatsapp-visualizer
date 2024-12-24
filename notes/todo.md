@@ -62,6 +62,9 @@
 
 # TODO
 
+-   Find out if goroutines or sequential is better
+-   Add Web Workers for updates to process
+
 -   Averages for stacked bars
 -   Averages for timeline
 -   Phrases case insensitive
