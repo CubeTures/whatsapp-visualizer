@@ -3,10 +3,11 @@ import { useBundle } from "@/hooks/context";
 import PaginatedTable from "./paginatedTable";
 import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
-import { ArrowUpDown, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import Popup from "./popup";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Sorter from "./sorter";
+import { prettyDate } from "@/lib/helpers";
 
 function Longest() {
 	const bundle = useBundle();
@@ -14,6 +15,7 @@ function Longest() {
 	interface Message {
 		sender: string;
 		rank: number;
+		date: Date;
 		message: string;
 		length: number;
 	}
@@ -26,9 +28,10 @@ function Longest() {
 		for (const [person, statistic] of Object.entries(bundle)) {
 			for (const msg of statistic.lengths.longest_messages) {
 				result.push({
+					...msg,
 					sender: person,
 					rank: -1,
-					...msg,
+					date: new Date(msg.date),
 				});
 			}
 		}
@@ -64,11 +67,17 @@ function Longest() {
 			},
 		},
 		{
+			accessorKey: "date",
+			header: (props) => Sorter("Date", props),
+			cell: ({ row }) => row.getValue<Date>("date").toDateString(),
+		},
+		{
 			accessorKey: "message",
 			header: "Message",
 			cell: ({ row }) => {
 				const message = row.getValue<string>("message");
 				const rank = row.getValue<number>("rank");
+				const date = data[rank - 1].date;
 				const sender = row.getValue<string>("sender");
 				const length = row.getValue<number>("length").toLocaleString();
 
@@ -82,7 +91,9 @@ function Longest() {
 					<Popup
 						trigger={trigger}
 						title={`#${rank} Longest Message`}
-						desc={`Message from ${sender} with ${length} words.`}>
+						desc={`Message from ${sender} at ${prettyDate(
+							date
+						)} with ${length} words.`}>
 						{message}
 					</Popup>
 				);

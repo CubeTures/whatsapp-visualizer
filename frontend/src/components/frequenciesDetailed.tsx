@@ -2,7 +2,11 @@ import { Frequencies } from "@/lib/structures";
 import { singular, Frequency } from "./frequencies";
 import { CellContext, ColumnDef } from "@tanstack/react-table";
 import PaginatedTable from "./paginatedTable";
-import { capitalize, capitalizeAll, decapitalize } from "@/lib/helpers";
+import {
+	capitalize,
+	capitalizeAll,
+	decapitalize,
+} from "@/lib/helpers";
 import { Button } from "./ui/button";
 import { Eye } from "lucide-react";
 import Popup from "./popup";
@@ -76,6 +80,14 @@ function FrequenciesDetailed({ field, cell: { row } }: Props) {
 				{
 					accessorKey: "count",
 					header: (props) => Sorter("Count", props),
+					cell: ({ row }) => {
+						const count = row.getValue<number>("count");
+						return (
+							<div className="font-mono font-tabular">
+								{count.toLocaleString()}
+							</div>
+						);
+					},
 				},
 			],
 		])

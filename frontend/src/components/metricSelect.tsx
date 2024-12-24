@@ -3,6 +3,8 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
+	SelectLabel,
+	SelectSeparator,
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
@@ -42,6 +44,8 @@ function MetricSelect() {
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>
+					<SelectLabel>Metrics</SelectLabel>
+					<SelectSeparator />
 					{metrics.map((metric, i) => (
 						<SelectItem
 							value={metric}

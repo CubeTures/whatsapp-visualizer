@@ -5,6 +5,7 @@ import { Counts as CountsStruct } from "@/lib/structures";
 import { capitalize, capitalizeAll } from "@/lib/helpers";
 import { getCountsFlavor } from "@/lib/countsFlavor";
 import Carousel from "./carousel";
+import Header from "./header";
 
 function CountsTotals() {
 	const bundle = useBundle();
@@ -68,15 +69,24 @@ function CountsTotals() {
 	}
 
 	return (
-		<Carousel>
-			{data.map((d, i) => (
-				<CarouselItem
-					key={i}
-					className="md:basis-1/2 lg:basis-1/3 grid">
-					<CountCard {...d} />
-				</CarouselItem>
-			))}
-		</Carousel>
+		<>
+			<Header
+				title={"Total Counts"}
+				desc="These are your total counts. Every message, emoji, and link
+					is accounted for. Who sent the most? Did that align with
+					your expectations? Why or why not? See the averages for
+					these counts by changing the statistic in the navbar."
+			/>
+			<Carousel>
+				{data.map((d, i) => (
+					<CarouselItem
+						key={i}
+						className="md:basis-1/2 lg:basis-1/3 grid">
+						<CountCard {...d} />
+					</CarouselItem>
+				))}
+			</Carousel>
+		</>
 	);
 }
 

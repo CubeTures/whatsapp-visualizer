@@ -63,13 +63,9 @@
 # TODO
 
 -   Averages for stacked bars
--   Info and flavor (?) for time bars
+-   Averages for timeline
 -   Phrases case insensitive
     -   Make display for frequencies capitalized
 -   Sidebar for toggling people, total vs averages, and metric
--   Display timestamp for longest message
-
 -   Date picker
 -   Date filters
--   Area chart for entire chat history
-    -   And brush

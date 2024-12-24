@@ -11,6 +11,7 @@ import Carousel from "./carousel";
 import CardHeader from "./cardHeader";
 import FrequenciesDetailed from "./frequenciesDetailed";
 import Sorter from "./sorter";
+import Header from "./header";
 
 export interface Frequency {
 	content: string;
@@ -164,18 +165,24 @@ function Frequencies() {
 	}
 
 	return (
-		<Carousel>
-			{fields.map((field, index) => (
-				<CarouselItem
-					key={index}
-					className="flex flex-col gap-4">
-					{Content(field, index)}
+		<>
+			<Header
+				title="Frequencies and Length"
+				desc="The frequency tables keep track of the dates each time a figure was used. Filter the result to find a specific item, then see more info about it by clicking the eye. Further explore by seeing how many by day it was used by a person. Your mind is the limit with this; compile your own statistics! Then, see the longest messages sent in your chat history."
+			/>
+			<Carousel>
+				{fields.map((field, index) => (
+					<CarouselItem
+						key={index}
+						className="flex flex-col gap-4">
+						{Content(field, index)}
+					</CarouselItem>
+				))}
+				<CarouselItem>
+					<Longest />
 				</CarouselItem>
-			))}
-			<CarouselItem>
-				<Longest />
-			</CarouselItem>
-		</Carousel>
+			</Carousel>
+		</>
 	);
 }
 

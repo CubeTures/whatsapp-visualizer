@@ -10,6 +10,7 @@ import {
 	ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 import Carousel from "./carousel";
+import Header from "./header";
 
 function CountsAverages() {
 	const bundle = useBundle();
@@ -114,18 +115,24 @@ function CountsAverages() {
 	);
 
 	return (
-		<Carousel>
-			{data.map((d, i) => (
-				<CarouselItem
-					key={i}
-					className="md:basis-1/2 lg:basis-1/3 grid">
-					<CountCard
-						{...d}
-						formatter={formatter}
-					/>
-				</CarouselItem>
-			))}
-		</Carousel>
+		<>
+			<Header
+				title="Count Averages"
+				desc="These are the averages of every message sent, approximated in fractions for conceptual simplicity. Do the totals align with the counts?"
+			/>
+			<Carousel>
+				{data.map((d, i) => (
+					<CarouselItem
+						key={i}
+						className="md:basis-1/2 lg:basis-1/3 grid">
+						<CountCard
+							{...d}
+							formatter={formatter}
+						/>
+					</CarouselItem>
+				))}
+			</Carousel>
+		</>
 	);
 }
 

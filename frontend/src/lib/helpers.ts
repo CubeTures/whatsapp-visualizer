@@ -36,19 +36,13 @@ export function nameOf(name: string): string {
 	return name.split(" ")[0];
 }
 
-export function sortByCounts(
-	bundle: Bundle,
-	field: keyof Counts
-): string[] {
+export function sortByCounts(bundle: Bundle, field: keyof Counts): string[] {
 	return Object.keys(bundle).sort(
 		(a, b) => bundle[b].counts[field] - bundle[a].counts[field]
 	);
 }
 
-export function sortByAverage(
-	bundle: Bundle,
-	field: AveragesKey
-): string[] {
+export function sortByAverage(bundle: Bundle, field: AveragesKey): string[] {
 	return Object.keys(bundle).sort(
 		(a, b) =>
 			bundle[b].counts[field] / bundle[b].counts.messages -
@@ -132,4 +126,36 @@ export function asFraction(count: number, total: number) {
 		count > total ? 1 : Math.round(total / count)
 	).toLocaleString();
 	return count > total ? num : `${num}/${den}`;
+}
+
+export function prettyDate(date: Date, short?: boolean): string {
+	const day = date.getDate();
+
+	const weekday = date.toLocaleDateString("en-US", {
+		weekday: "long",
+	});
+
+	const month = date.toLocaleDateString("en-US", {
+		month: short ? "short" : "long",
+	});
+
+	if (short) {
+		return `${month} ${day}, ${date.getFullYear()}`;
+	} else {
+		return `${weekday}, ${month} ${day}${ordinal(day)}, ${date.getFullYear()}`;
+	}
+}
+
+function ordinal(day: number): string {
+	if (day > 3 && day < 21) return "th";
+	switch (day % 10) {
+		case 1:
+			return "st";
+		case 2:
+			return "nd";
+		case 3:
+			return "rd";
+		default:
+			return "th";
+	}
 }

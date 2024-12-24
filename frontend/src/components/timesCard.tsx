@@ -3,8 +3,6 @@
 import {
 	Card,
 	CardContent,
-	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
@@ -40,8 +38,6 @@ export interface Props<T, K extends keyof T> {
 
 function TimesCard<T, K extends keyof T>({
 	title,
-	desc,
-	footer,
 	data,
 	dataKeys,
 	axisNameKey,
@@ -186,10 +182,8 @@ function TimesCard<T, K extends keyof T>({
 		<Card>
 			<CardHeader>
 				<CardTitle>{title}</CardTitle>
-				<CardDescription>{desc}</CardDescription>
 			</CardHeader>
 			<CardContent>{StackedBarChart()}</CardContent>
-			<CardFooter>{footer}</CardFooter>
 		</Card>
 	);
 }

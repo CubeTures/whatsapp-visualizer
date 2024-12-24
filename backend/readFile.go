@@ -7,15 +7,17 @@ import (
 	"sync"
 )
 
-func ReadFileSequential(fileName string) []*Message {
-	messages := readFile(fileName)
+func ReadFileSequential(fileName string) ([]*Message, []string) {
+	messages := readFileInput(fileName)
 	parsed := make([]*Message, len(messages))
+	hashmap := CreateHashmap[string]()
 
 	for index, message := range messages {
 		parsed[index] = ParseMessage(message)
+		hashmap.Add(parsed[index].sender)
 	}
 
-	return parsed
+	return parsed, hashmap.ToSlice()
 }
 
 func ReadFileInfiniteGoroutines(fileName string) []*Message {
@@ -35,8 +37,8 @@ func ReadFileInfiniteGoroutines(fileName string) []*Message {
 	return parsed
 }
 
-func ReadFilePooled(fileName string) ([]*Message, []string) {
-	messages := readFile(fileName)
+func ReadFilePooled(text string) ([]*Message, []string) {
+	messages := readFileInput(text)
 	parsed := make([]*Message, len(messages))
 	hashmap := CreateHashmap[string]()
 
@@ -54,6 +56,10 @@ func ReadFilePooled(fileName string) ([]*Message, []string) {
 
 	pool.CompleteTasks()
 	return parsed, hashmap.ToSlice()
+}
+
+func readFileInput(text string) []string {
+	return splitOnNewMessage(text)[1:]
 }
 
 func readFile(fileName string) []string {

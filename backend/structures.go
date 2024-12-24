@@ -86,6 +86,20 @@ func (b *Bundle) MarshalJSON() ([]byte, error) {
 	return json.Marshal(b.Personal)
 }
 
+// func (f *Frequencies) MarshalJSON() ([]byte, error) {
+
+// }
+
+// func MarshallFrequencyMap(m map[string][]time.Time) ([]byte, error) {
+// 	var builder bytes.Buffer
+
+// 	for key, times := range m {
+
+// 	}
+
+// 	return builder.Bytes(), nil
+// }
+
 func (stats *Statistics) String() string {
 	return fmt.Sprintf("%v\n%v\n%v\n%v\n", stats.Counts, stats.Frequencies, stats.CountsByTime, stats.Lengths)
 }

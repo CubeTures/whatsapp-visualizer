@@ -1,4 +1,4 @@
-module learn/hello
+module whatsapp-visualizer
 
 go 1.23.3
 

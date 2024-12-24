@@ -3,6 +3,8 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
+	SelectLabel,
+	SelectSeparator,
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
@@ -32,6 +34,8 @@ function StatisticSelect() {
 			</SelectTrigger>
 			<SelectContent>
 				<SelectGroup>
+					<SelectLabel>Statistics</SelectLabel>
+					<SelectSeparator/>
 					{statistics.map((stat, i) => (
 						<SelectItem
 							value={stat}

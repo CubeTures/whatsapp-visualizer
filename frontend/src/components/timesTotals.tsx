@@ -5,6 +5,7 @@ import { useBundle, useFilters } from "@/hooks/context";
 import { CarouselItem } from "./ui/carousel";
 import { useMemo } from "react";
 import Carousel from "./carousel";
+import Header from "./header";
 
 function TimesTotals() {
 	const bundle = useBundle();
@@ -89,15 +90,21 @@ function TimesTotals() {
 	}
 
 	return (
-		<Carousel>
-			{data.map((d, i) => (
-				<CarouselItem
-					key={i}
-					className="lg:basis-1/2">
-					<TimesCard {...d} />
-				</CarouselItem>
-			))}
-		</Carousel>
+		<>
+			<Header
+				title="Totals by Time"
+				desc="These are the same counts as before, divided up into hours, weekdays, months, and years. How has you communication stayed similar on a micro scale (by hour and by weekday) and how has it evolved over time (by month and by year)? Why do these trends exist? Change the metric in the navbar to see different graphs."
+			/>
+			<Carousel>
+				{data.map((d, i) => (
+					<CarouselItem
+						key={i}
+						className="lg:basis-1/2">
+						<TimesCard {...d} />
+					</CarouselItem>
+				))}
+			</Carousel>
+		</>
 	);
 }
 
